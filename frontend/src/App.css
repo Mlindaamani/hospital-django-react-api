@@ -1,0 +1,44 @@
+.labtest,
+.appointment {
+  margin-top: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+.appointment,
+.labtest {
+  cursor: pointer;
+}
+
+.labtest:hover {
+  transform: translateZ(20px) scale(1.1);
+}
+.appointment:hover {
+  transform: translateZ(20px) scale(1.1);
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.order {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.med-card {
+  cursor: pointer;
+}
+.med-card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.med-card:hover {
+  transform: translateZ(20px) scale(1.1);
+}

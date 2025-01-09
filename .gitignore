@@ -1,0 +1,14 @@
+node_modules/
+frontend/node_modules/
+frontend/eslint.config.js
+frontend/vite.config.js
+frontend/vite.config.js
+frontend/package-lock.json
+db.sqlite3
+log
+venv/
+.venv
+.python-version
+backend/api/migrations/
+backend/venv/
+__pycache__
