@@ -10,16 +10,13 @@ import {
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:8000/",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    if (!config.url.includes("/login")) {
-      const token = getAccessToken();
+    const token = getAccessToken();
+    if (token && !config.headers.Authorization) {
       config.headers.Authorization = `JWT ${token}`;
       return config;
     }
@@ -34,13 +31,13 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    if (error.response.status === 401 && !originalRequest.sent) {
+      originalRequest.sent = true;
 
       try {
         const { access } = await refreshToken(getRefreshToken());
         storeTokens(access, getRefreshToken());
-        axios.defaults.headers.common["Authorization"] = `JWT ${access}`;
+        originalRequest.headers.Authorization = `JWT ${access}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         removeTokens();
