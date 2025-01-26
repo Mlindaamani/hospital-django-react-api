@@ -16,11 +16,9 @@ export const removeTokens = () => {
   localStorage.removeItem("refreshToken");
 };
 
-
 export const isAuthenticated = () => {
   return getAccessToken() != null ? true : false;
 };
-
 
 export const filterPatients = (
   patients,
@@ -44,16 +42,16 @@ export const filterAppointmentByCustomFields = (
   fields = [
     "patient_file_number",
     "patient_name",
-    "doctor_name", 
+    "doctor_name",
     "doctor_specialization",
     "status",
     "reason",
   ]
 ) => {
   return appointments.filter((patient) => {
+    const searchQueryLower = searchTerm.toLowerCase();
     for (const field of fields) {
       const fieldValueLower = patient[field].toLowerCase();
-      const searchQueryLower = searchTerm.toLowerCase();
       if (fieldValueLower.includes(searchQueryLower)) {
         return true;
       }
