@@ -119,7 +119,6 @@ class ReceptionistViewSet(BaseViewSet):
         serializer = self.get_serializer(request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer=serializer)
-      
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):

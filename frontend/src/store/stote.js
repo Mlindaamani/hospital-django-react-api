@@ -7,25 +7,32 @@ export const useStore = create(
       items: [],
 
       addItem: (newItem) => {
-        const items = get().items;
+        // Retrieve the current list of items from the state
+        const { items } = get();
 
+        // Check if the new item already exists in the list by comparing IDs
         const itemExist = items.find((item) => newItem.id === item.id);
 
         if (itemExist) {
+          // If the item exists, update the quantity of the existing item
           set({
-            items: items.map((item) =>
-              item.id === newItem.id
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
+            items: items.map(
+              (item) =>
+                item.id === newItem.id
+                  ? { ...item, quantity: item.quantity + newItem.quantity } // Increase the quantity
+                  : item // Keep the other items unchanged
             ),
           });
         } else {
-          set({ items: [...items, { ...newItem, quantity: 1 }] });
+          // If the item does not exist, add it to the list with a default quantity of 1 if not specified
+          set({
+            items: [...items, { ...newItem, quantity: newItem.quantity || 1 }],
+          });
         }
       },
 
       updateQuantity: (id, quantity) => {
-        const items = get().items;
+        const { items } = get();
         set({
           items: items.map((item) =>
             id === item.id ? { ...item, quantity } : item
@@ -34,7 +41,7 @@ export const useStore = create(
       },
 
       getTotalPrice: () => {
-        const items = get().items;
+        const { items } = get();
         return items.reduce(
           (total, item) => total + item.price * item.quantity,
           0
@@ -42,7 +49,7 @@ export const useStore = create(
       },
 
       getTotalItems: () => {
-        const items = get().items;
+        const { items } = get();
         return items.reduce(
           (totalItems, item) => totalItems + item.quantity,
           0

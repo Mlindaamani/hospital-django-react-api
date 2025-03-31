@@ -9,7 +9,6 @@ from .models import (
 
 )
 
-
 @admin.register(Nurse)
 class NurseAdmin(admin.ModelAdmin):
     list_display = ['user', 'year_of_experience', 'license_number']

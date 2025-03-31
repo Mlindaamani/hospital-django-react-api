@@ -4,6 +4,7 @@ import { removeTokens } from "../../utils/functions";
 // Register a new user
 export const createNewStaff = async (data) => {
   try {
+    // Send a POST request to register a new user
     const response = await axiosInstance.post("/auth/users/", data);
     return response.data;
   } catch (error) {
@@ -15,6 +16,7 @@ export const createNewStaff = async (data) => {
 // Login a user
 export const login = async (credentials) => {
   try {
+    // Send a POST request to login the user and get JWT tokens
     const response = await axiosInstance.post("/auth/jwt/create/", credentials);
     return response.data;
   } catch (error) {
@@ -25,13 +27,15 @@ export const login = async (credentials) => {
 
 // Logout a user
 export const logout = () => {
+  // Remove tokens from storage and redirect to login page
   removeTokens();
   window.location.href = "/login/";
 };
 
-// Verify JW token
+// Verify JWT token
 export const verifyToken = async (token) => {
   try {
+    // Send a POST request to verify the provided JWT token
     const response = await axiosInstance.post("/auth/jwt/verify/", { token });
     return response.data;
   } catch (error) {
@@ -43,6 +47,7 @@ export const verifyToken = async (token) => {
 // Refresh JWT token
 export const refreshToken = async (refreshToken) => {
   try {
+    // Send a POST request to refresh the JWT token using the refresh token
     const response = await axiosInstance.post("/auth/jwt/refresh/", {
       refresh: refreshToken,
     });

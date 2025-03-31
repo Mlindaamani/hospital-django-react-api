@@ -1,23 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from .choices import RoleChoices, BillChoice, PatientGenderChoices, AppointmentChoice, LabResultsChoice, PrescriptionChoice
 
+    
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    ADMIN = 'admin'
-    DOCTOR = 'doctor'
-    RECEPTIONIST = 'receptionist'
-    LAB_TECH = 'lab_tech'
-    PHARMACIST = 'pharmacist'
-    NURSE = 'nurse'
-    ROLE_CHOICES = [
-        (ADMIN, 'Admin'), 
-        (DOCTOR, 'Doctor'),
-        (RECEPTIONIST, 'Receptionist'),
-        (LAB_TECH, 'Lab Technician'),
-        (PHARMACIST, 'Pharmacist'),
-        (NURSE, 'Nurse')]
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=20, choices=RoleChoices.ROLE_CHOICES, default=RoleChoices.DOCTOR)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.email}"
@@ -59,20 +48,10 @@ class Doctor(models.Model):
 
 
 class Patient(models.Model):
-    GENDER_CHOICES_FEMALE = 'F'
-    GENDER_CHOICES_MALE = 'M'
-    GENDER_CHOICES_OTHERS = 'O'
-
-    GENDER_CHOICES = [
-        (GENDER_CHOICES_FEMALE, 'Female'),
-        (GENDER_CHOICES_MALE, 'Male'),
-        (GENDER_CHOICES_OTHERS, 'Other')
-    ]
-
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     gender = models.CharField(
-        max_length=1, choices=GENDER_CHOICES, default=GENDER_CHOICES_MALE)
+        max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
     address = models.TextField()
     phone_number = models.CharField(max_length=15)
     email = models.EmailField()
@@ -83,20 +62,15 @@ class Patient(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class Appointment(models.Model):
-    STATUS_SCHEDULED = 'Scheduled'
-    STATUS_COMPLETED = 'Completed'
-    STATUS_CANCELLED = 'Cancelled'
-    STATUS_CHOICES = [(STATUS_SCHEDULED, 'Scheduled'),
-                      (STATUS_COMPLETED, 'Completed'), (STATUS_CANCELLED, 'Cancelled')]
 
+class Appointment(models.Model):
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(
         Doctor, on_delete=models.CASCADE, related_name='appointments')
     appointment_date = models.DateTimeField()
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_SCHEDULED)
+        max_length=20, choices=AppointmentChoice.STATUS_CHOICES, default=AppointmentChoice.STATUS_SCHEDULED)
     reason = models.TextField()
 
     @property
@@ -164,19 +138,15 @@ class Medicine(models.Model):
         return self.name
 
 
-class Prescription(models.Model):
-    STATUS_PENDING = 'pending'
-    STATUS_DESPENSED = 'dispensed'
-    STATUS_CHOICES = [(STATUS_PENDING, 'Pending'),
-                      (STATUS_DESPENSED, 'Dispensed')]
 
+class Prescription(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor,  on_delete=models.CASCADE)
     prescription_date = models.DateTimeField(auto_now_add=True)
     medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
     instructions = models.TextField(default='3x3')
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+        max_length=20, choices=PrescriptionChoice.STATUS_CHOICES, default=PrescriptionChoice.STATUS_PENDING)
 
     @property
     def patient_name(self):
@@ -197,17 +167,12 @@ class Prescription(models.Model):
     def __str__(self):
         return f"Prescription for {self.patient.first_name} {self.patient.last_name}"
 
-
 class Bill(models.Model):
-    STATUS_UNPAID = 'Unpaid'
-    STATUS_PAID = 'Paid'
-    STATUS_CHOICES = [(STATUS_UNPAID, 'Unpaid'), (STATUS_PAID, 'Paid')]
-
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date_issued = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_UNPAID)
+        max_length=20, choices=BillChoice.STATUS_CHOICES, default=BillChoice.STATUS_UNPAID)
 
     @property
     def patient_name(self):
@@ -223,11 +188,6 @@ class Bill(models.Model):
 
 
 class LabResult(models.Model):
-    STATUS_PENDING = 'Pending'
-    STATUS_COMPLETED = 'Completed'
-    STATUS_CHOICES = [(STATUS_PENDING, 'Pending'),
-                      (STATUS_COMPLETED, 'Completed')]
-
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     lab_technician = models.ForeignKey(
         LabTechnician, on_delete=models.CASCADE, null=True)
@@ -235,7 +195,7 @@ class LabResult(models.Model):
     result = models.TextField()
     date_conducted = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+        max_length=20, choices=LabResultsChoice.STATUS_CHOICES, default=LabResultsChoice.STATUS_PENDING)
 
     @property
     def patient_name(self):

@@ -18,7 +18,6 @@ from .views import (
 
 
 router = DefaultRouter()
-router.APIRootView.__doc__ = "Welcome to ebotcare"
 router.APIRootView.__name__ = "BACKEND"
 
 router.register('doctors', DoctorViewSet, basename='doctors')
