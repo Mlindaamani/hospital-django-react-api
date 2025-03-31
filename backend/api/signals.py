@@ -1,21 +1,20 @@
-from .models import CustomUser, Doctor, Receptionist, LabTechnician, Pharmacist
+from .models import User, Doctor, Receptionist, LabTechnician, Pharmacist
+from .choices import RoleChoices
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-@receiver(post_save, sender=CustomUser)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        if instance.role == CustomUser.DOCTOR:
-            Doctor.objects.create(user=instance, first_name=instance.first_name,
-                                  last_name=instance.last_name, email=instance.email)
-        elif instance.role == CustomUser.RECEPTIONIST:
+        if instance.role == RoleChoices.DOCTOR:
+            Doctor.objects.create(user=instance)
+        elif instance.role == RoleChoices.RECEPTIONIST:
             Receptionist.objects.create(
-                user=instance, first_name=instance.first_name, last_name=instance.last_name, email=instance.email)
-        elif instance.role == CustomUser.LAB_TECH:
+                user=instance, )
+        elif instance.role == RoleChoices.LAB_TECH:
             LabTechnician.objects.create(
-                user=instance, first_name=instance.first_name, last_name=instance.last_name, email=instance.email)
-        elif instance.role == CustomUser.PHARMACIST:
-            Pharmacist.objects.create(user=instance, first_name=instance.first_name,
-                                      last_name=instance.last_name, email=instance.email)
+                user=instance, )
+        elif instance.role == RoleChoices.PHARMACIST:
+            Pharmacist.objects.create(user=instance)

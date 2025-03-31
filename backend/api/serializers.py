@@ -31,20 +31,11 @@ class CustomUserSerializer(UserSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    # patient_name = serializers.SerializerMethodField()
-
     class Meta:
         model = Appointment
         fields = ['id', 'patient', 'doctor', 'patient_name', 'patient_file_number', 'doctor_name',
                   'doctor_specialization', 'appointment_date', 'reason', 'status'
                   ]
-
-    # def get_patient_name(self, obj):
-    #     return f"{obj.patient.first_name} {obj.patient.last_name}"
-
-    # def get_doctor_name(self, obj):
-    #     return f"{obj.doctor.first_name} {obj.doctor.last_name}"
-
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:

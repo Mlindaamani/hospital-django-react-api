@@ -5,7 +5,7 @@ from .models import (
     Patient, Doctor, Receptionist,
     LabTechnician, Pharmacist,
     Appointment, LabResult,
-    Prescription, Bill, CustomUser, Medicine, Nurse
+    Prescription, Bill, User, Medicine, Nurse
 
 )
 
@@ -14,15 +14,15 @@ class NurseAdmin(admin.ModelAdmin):
     list_display = ['user', 'year_of_experience', 'license_number']
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'first_name', 'email', 'is_superuser', 'role']
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'email', 'is_superuser', 'role']
 
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name',
-                    'specialization', 'phone_number', 'email']
+    list_display = ['user__first_name', 'user__last_name',
+                    'specialization', 'user__phone_number', 'user__email']
     list_filter = ['specialization']
 
 
@@ -35,20 +35,20 @@ class MedicineAdmin(admin.ModelAdmin):
 
 @admin.register(Receptionist)
 class ReceptionistAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email']
-    list_filter = ['first_name']
+    list_display = ['user__first_name', 'user__last_name', 'user__email']
+    list_filter = ['user__first_name']
 
 
 @admin.register(LabTechnician)
 class LabTechnicianAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email']
-    list_filter = ['first_name']
+    list_display = ['user__first_name', 'user__last_name', 'user__email']
+    list_filter = ['user__first_name']
 
 
 @admin.register(Pharmacist)
 class PharmacistAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email']
-    list_filter = ['first_name']
+    list_display = ['user__first_name', 'user__last_name', 'user__email']
+    list_filter = ['user__first_name']
 
 
 @admin.register(Appointment)
@@ -85,8 +85,7 @@ class BillAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'gender', 'address',
-                    'phone_number', 'email',  'file_number', 'created_at']
+    list_display = ['user__first_name', 'user__last_name', 'gender', 'address',
+                    'user__phone_number', 'user__email',  'file_number', 'created_at']
     list_filter = ['created_at']
-    list_editable = ['file_number', 'phone_number']
     list_per_page = 30

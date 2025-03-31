@@ -1,4 +1,4 @@
-
+from .choices import RoleChoices
 from .permissions import (
     IsAdminOrDoctor, IsReceptionist, IsPharmacist, IsAdminOrDoctorOrLabTech, IsNurse,
     IsAdmin, IsAdminOrDoctorOrReceptionist
@@ -12,7 +12,7 @@ from .serializers import (
 from .models import (
     Doctor, Receptionist, Patient, LabResult,
     Pharmacist, LabTechnician, Appointment, Bill,
-    Prescription, CustomUser, Medicine, Nurse
+    Prescription, User, Medicine, Nurse
 )
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -67,7 +67,7 @@ class PrescriptionViewSet(BaseViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == CustomUser.DOCTOR:
+        if user.role == RoleChoices.DOCTOR:
             return Prescription.objects.filter(doctor__user=user)
         else:
             return Prescription.objects.all()
@@ -92,7 +92,7 @@ class AppointmentViewSet(BaseViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == CustomUser.DOCTOR:
+        if user.role == RoleChoices.DOCTOR:
             return Appointment.objects.filter(doctor__user=user)
         else:
             return Appointment.objects.all()

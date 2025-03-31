@@ -1,22 +1,43 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from .choices import RoleChoices, BillChoice, PatientGenderChoices, AppointmentChoice, LabResultsChoice, PrescriptionChoice
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from .managers import HmsAccountManager
+
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True, max_length=255)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    phone_number= models.CharField(max_length=15, blank=True, null=True)
+    role = models.CharField(max_length=20, choices=RoleChoices.ROLE_CHOICES, default=RoleChoices.DOCTOR)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    
+    objects = HmsAccountManager()
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    
+    def __str__(self) -> str:
+        return f"{self.first_name}- {self.last_name}"
+    
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    def get_short_name(self):
+        return self.first_name
 
     
-class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    role = models.CharField(max_length=20, choices=RoleChoices.ROLE_CHOICES, default=RoleChoices.DOCTOR)
-
-    def __str__(self) -> str:
-        return f"{self.first_name} {self.email}"
-
-
 class Nurse(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='nurse_profile', blank=True, null=True)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='nurse_profile')
     license_number = models.CharField(max_length=255, unique=True)
     year_of_experience = models.IntegerField()
+    bio= models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='nurse_pictures/', default='nurse_pictures/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def full_name(self):
@@ -37,29 +58,35 @@ class Nurse(models.Model):
 class Doctor(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doctor_profile')
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
     specialization = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
+    license_number = models.CharField(max_length=255, unique=True)
+    year_of_experience = models.IntegerField(default=0)
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='doctor_pictures/', default='doctor_pictures/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Dr. {self.first_name} {self.last_name}"
+        return f"Dr. {self.user.first_name}"
 
 
 class Patient(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
     gender = models.CharField(
         max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
+    file_number = models.CharField(max_length=255, unique=True)
+    date_of_birth = models.DateField()
     address = models.TextField()
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
-    file_number = models.CharField(max_length=50, unique=True)
+    has_insurance = models.BooleanField(default=False)
+    insurance_number = models.CharField(max_length=255, blank=True, null=True)
+    is_discharged = models.BooleanField(default=False)
+    profile_picture = models.ImageField(upload_to='patient_pictures/', default='patient_pictures/default.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 
@@ -72,6 +99,9 @@ class Appointment(models.Model):
     status = models.CharField(
         max_length=20, choices=AppointmentChoice.STATUS_CHOICES, default=AppointmentChoice.STATUS_SCHEDULED)
     reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     @property
     def patient_file_number(self):
@@ -79,27 +109,29 @@ class Appointment(models.Model):
 
     @property
     def patient_name(self):
-        return f"{self.patient.first_name} {self.patient.last_name}"
+        return f"{self.patient.user.first_name} {self.patient.user.last_name}"
 
     @property
     def doctor_name(self):
-        return f"{self.doctor.first_name} {self.doctor.last_name}"
+        return f"{self.doctor.first_name} {self.doctor.user.last_name}"
 
     @property
     def doctor_specialization(self):
         return self.doctor.specialization
 
     def __str__(self):
-        return f"Appointment with Dr. {self.doctor.last_name} for {self.patient.first_name} {self.patient.last_name}"
+        return f"Appointment with Dr. {self.doctor.user.last_name} for {self.patient.user.first_name} {self.patient.user.last_name}"
 
 
 class Receptionist(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receptionist_profile')
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
+    year_of_experience = models.IntegerField()
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='receptionist_pictures/', default='receptionist_pictures/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -108,25 +140,29 @@ class Receptionist(models.Model):
 class LabTechnician(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_technician_profile')
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
-
+    year_of_experience = models.IntegerField()
+    license_number = models.CharField(max_length=255, unique=True)
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='lab_technician_pictures/', default='lab_technician_pictures/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 class Pharmacist(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pharmacist_profile')
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
-
+    year_of_experience = models.IntegerField()
+    license_number = models.CharField(max_length=255, unique=True)
+    bio= models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='pharmacist_pictures/', default='pharmacist_pictures/default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
  
 
 class Medicine(models.Model):
@@ -147,14 +183,16 @@ class Prescription(models.Model):
     instructions = models.TextField(default='3x3')
     status = models.CharField(
         max_length=20, choices=PrescriptionChoice.STATUS_CHOICES, default=PrescriptionChoice.STATUS_PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def patient_name(self):
-        return f"{self.patient.first_name} {self.patient.last_name}"
+        return f"{self.patient.user.first_name} {self.patient.user.last_name}"
 
     @property
     def doctor_name(self):
-        return f"{self.doctor.first_name} {self.doctor.last_name}"
+        return f"{self.doctor.user.first_name} {self.doctor.user.last_name}"
 
     @property
     def patient_file_number(self):
@@ -165,7 +203,7 @@ class Prescription(models.Model):
         return f"{self.medicines.name}"
 
     def __str__(self):
-        return f"Prescription for {self.patient.first_name} {self.patient.last_name}"
+        return f"Prescription for {self.patient.user.first_name} {self.patient.user.last_name}"
 
 class Bill(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -176,7 +214,7 @@ class Bill(models.Model):
 
     @property
     def patient_name(self):
-        return f"{self.patient.first_name} {self.patient.last_name}"
+        return f"{self.patient.user.first_name} {self.patient.user.last_name}"
 
     @property
     def patient_file_number(self):
@@ -184,7 +222,7 @@ class Bill(models.Model):
 
 
     def __str__(self):
-        return f"Bill for {self.patient.first_name} {self.patient.last_name} - {self.amount}"
+        return f"Bill for {self.patient.user.first_name} {self.patient.user.last_name} - {self.amount}"
 
 
 class LabResult(models.Model):
@@ -199,7 +237,7 @@ class LabResult(models.Model):
 
     @property
     def patient_name(self):
-        return f"{self.patient.first_name} {self.patient.last_name}"
+        return f"{self.patient.user.first_name} {self.patient.user.last_name}"
 
     @property
     def patient_file_number(self):
@@ -207,7 +245,7 @@ class LabResult(models.Model):
 
     @property
     def doctor_name(self):
-        return f"{self.doctor.first_name} {self.doctor.last_name}"
+        return f"{self.doctor.user.first_name} {self.doctor.user.last_name}"
 
     @property
     def doctor_specialization(self):
@@ -215,7 +253,7 @@ class LabResult(models.Model):
 
     @property
     def lab_technician_name(self):
-        return f"{self.lab_technician.first_name} {self.lab_technician.last_name}"
+        return f"{self.lab_technician.user.first_name} {self.lab_technician.user.last_name}"
 
     def __str__(self):
-        return f"{self.test_type} for {self.patient.first_name} {self.patient.last_name}"
+        return f"{self.test_type} for {self.patient.user.first_name} {self.patient.user.last_name}"
