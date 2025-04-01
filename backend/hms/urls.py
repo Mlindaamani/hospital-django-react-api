@@ -1,5 +1,5 @@
 """
-URL configuration for core project.
+URL configuration for hms project.
 """
 from django.contrib import admin
 from rest_framework.urls import views
