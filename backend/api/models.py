@@ -1,8 +1,11 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from django.conf import settings
-from .choices import RoleChoices, BillChoice, PatientGenderChoices, AppointmentChoice, LabResultsChoice, PrescriptionChoice
+from .choices import (RoleChoices, BillChoice, PatientGenderChoices, AppointmentChoice, 
+LabResultsChoice, PrescriptionChoice)
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import HmsAccountManager
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255)
@@ -18,26 +21,38 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     
-    def __str__(self) -> str:
-        return f"{self.first_name}- {self.last_name}"
+    def __str__(self):
+        return f"{self.first_name or ''} {self.last_name or ''}".strip()
     
     @property
     def full_name(self):
-        return f"{self.first_name} {self.last_name}"
-    
-    def get_short_name(self):
-        return self.first_name
+        return f"{self.first_name or ''} {self.last_name or ''}".strip()
 
-    
-class Nurse(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='nurse_profile')
-    license_number = models.CharField(max_length=255, unique=True)
-    year_of_experience = models.IntegerField()
-    bio= models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='nurse_pictures/', default='nurse_pictures/default.jpg')
+    def get_short_name(self):
+        return self.first_name or ""
+
+# Base Profile Model
+class BaseProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    year_of_experience = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+    bio = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/default.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+    
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
+class Nurse(BaseProfile):
+    license_number = models.CharField(max_length=255, blank=True, null=True)
+
+
+    def __str__(self):
+       return f"{self.user.first_name}-{self.user.last_name}: {self.license_number}"
+
 
     @property
     def full_name(self):
@@ -55,20 +70,17 @@ class Nurse(models.Model):
         return f"{self.user.username}-{self.user.password}"
 
 
-class Doctor(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doctor_profile')
+class Doctor(BaseProfile):
     specialization = models.CharField(max_length=100)
-    license_number = models.CharField(max_length=255, unique=True)
-    year_of_experience = models.IntegerField(default=0)
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='doctor_pictures/', default='doctor_pictures/default.jpg')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    license_number = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Dr. {self.user.first_name}"
-
+    
+    @property
+    def full_name(self):
+        return f"{self.user.first_name}-{self.user.last_name}"
+    
 
 class Patient(models.Model):
     user = models.OneToOneField(
@@ -87,6 +99,13 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+    
+
+    def save(self, *args, **kwargs):
+        if not self.has_insurance:
+            self.insurance_number = None
+        super().save(*args, **kwargs)
+        
 
 
 
@@ -113,7 +132,7 @@ class Appointment(models.Model):
 
     @property
     def doctor_name(self):
-        return f"{self.doctor.first_name} {self.doctor.user.last_name}"
+        return f"{self.doctor.user.first_name} {self.doctor.user.last_name}"
 
     @property
     def doctor_specialization(self):
@@ -123,43 +142,25 @@ class Appointment(models.Model):
         return f"Appointment with Dr. {self.doctor.user.last_name} for {self.patient.user.first_name} {self.patient.user.last_name}"
 
 
-class Receptionist(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receptionist_profile')
-    year_of_experience = models.IntegerField()
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='receptionist_pictures/', default='receptionist_pictures/default.jpg')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class Receptionist(BaseProfile):
+    specialization = models.CharField(max_length=100, default='General')
 
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
-class LabTechnician(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_technician_profile')
-    year_of_experience = models.IntegerField()
+class LabTechnician(BaseProfile):
+    specialization = models.CharField(max_length=100,default='General')
     license_number = models.CharField(max_length=255, unique=True)
-    bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='lab_technician_pictures/', default='lab_technician_pictures/default.jpg')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class Pharmacist(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='pharmacist_profile')
-    year_of_experience = models.IntegerField()
-    license_number = models.CharField(max_length=255, unique=True)
-    bio= models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='pharmacist_pictures/', default='pharmacist_pictures/default.jpg')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class Pharmacist(BaseProfile):
+    specialization = models.CharField(max_length=100, default='General')
+    license_number = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -172,7 +173,6 @@ class Medicine(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 class Prescription(models.Model):
@@ -200,7 +200,7 @@ class Prescription(models.Model):
 
     @property
     def medicine_name(self):
-        return f"{self.medicines.name}"
+        return f"{self.medicine.name}"
 
     def __str__(self):
         return f"Prescription for {self.patient.user.first_name} {self.patient.user.last_name}"
@@ -226,9 +226,10 @@ class Bill(models.Model):
 
 
 class LabResult(models.Model):
+    
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     lab_technician = models.ForeignKey(
-        LabTechnician, on_delete=models.CASCADE, null=True)
+        LabTechnician, on_delete=models.SET_NULL, null=True)
     test_type = models.CharField(max_length=100)
     result = models.TextField()
     date_conducted = models.DateTimeField(auto_now_add=True)
@@ -243,13 +244,6 @@ class LabResult(models.Model):
     def patient_file_number(self):
         return self.patient.file_number
 
-    @property
-    def doctor_name(self):
-        return f"{self.doctor.user.first_name} {self.doctor.user.last_name}"
-
-    @property
-    def doctor_specialization(self):
-        return self.doctor.specialization
 
     @property
     def lab_technician_name(self):

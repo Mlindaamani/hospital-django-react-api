@@ -6,12 +6,13 @@ class RoleChoices:
     LAB_TECH = 'lab_tech'
     PHARMACIST = 'pharmacist'
     NURSE = 'nurse'
-    ROLE_CHOICES = [(ADMIN, 'Admin'), (DOCTOR, 'Doctor'),
-                    (RECEPTIONIST, 'Receptionist'),
-                    (LAB_TECH, 'Lab Technician'),
-                    (PHARMACIST, 'Pharmacist'),
-                    (NURSE, 'Nurse')
-                    ]
+    ROLE_CHOICES = [
+        (ADMIN, 'Admin'), (DOCTOR, 'Doctor'),
+        (RECEPTIONIST, 'Receptionist'),
+        (LAB_TECH, 'Lab Technician'),
+        (PHARMACIST, 'Pharmacist'),
+        (NURSE, 'Nurse')
+    ]
     
 
 
@@ -30,22 +31,28 @@ class AppointmentChoice:
     STATUS_SCHEDULED = 'Scheduled'
     STATUS_COMPLETED = 'Completed'
     STATUS_CANCELLED = 'Cancelled'
-    STATUS_CHOICES = [(STATUS_SCHEDULED, 'Scheduled'), 
-                      (STATUS_COMPLETED, 'Completed'), 
-                      (STATUS_CANCELLED, 'Cancelled')]
+    STATUS_CHOICES = [
+        (STATUS_SCHEDULED, 'Scheduled'), 
+        (STATUS_COMPLETED, 'Completed'), 
+        (STATUS_CANCELLED, 'Cancelled')
+    ]
 
 class PrescriptionChoice:
     STATUS_PENDING = 'pending'
     STATUS_DESPENSED = 'dispensed'
-    STATUS_CHOICES = [(STATUS_PENDING, 'Pending'),
-                      (STATUS_DESPENSED, 'Dispensed')]
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_DESPENSED, 'Dispensed')
+    ]
     
 
 class LabResultsChoice:
     STATUS_PENDING = 'Pending'
     STATUS_COMPLETED = 'Completed'
-    STATUS_CHOICES = [(STATUS_PENDING, 'Pending'),
-                       (STATUS_COMPLETED, 'Completed')]
+    STATUS_CHOICES = [
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_COMPLETED, 'Completed')
+    ]
 
 
 class BillChoice:

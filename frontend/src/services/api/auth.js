@@ -18,6 +18,7 @@ export const login = async (credentials) => {
   try {
     // Send a POST request to login the user and get JWT tokens
     const response = await axiosInstance.post("/auth/jwt/create/", credentials);
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);

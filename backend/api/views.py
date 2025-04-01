@@ -1,24 +1,22 @@
-from .choices import RoleChoices
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import status
+from rest_framework.decorators import action
+
 from .permissions import (
     IsAdminOrDoctor, IsReceptionist, IsPharmacist, IsAdminOrDoctorOrLabTech, IsNurse,
     IsAdmin, IsAdminOrDoctorOrReceptionist
 )
+from .choices import RoleChoices
 from .serializers import (
     DoctorSerializer, ReceptionistSerializer, PatientSerializer,
     LabResultSerializer, PharmacistSerializer, LabTechnicianSerializer,
     AppointmentSerializer, BillSerializer, PrescriptionSerializer,
     CustomTokenObtainPairSerializer, MedicineSerializer, NurseSerializer
 )
-from .models import (
-    Doctor, Receptionist, Patient, LabResult,
-    Pharmacist, LabTechnician, Appointment, Bill,
-    Prescription, User, Medicine, Nurse
-)
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import status
-from rest_framework.decorators import action
+from .models import (Doctor, Receptionist, Patient, LabResult, Pharmacist, LabTechnician, Appointment, Bill, Prescription, Medicine, Nurse)
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -31,8 +29,6 @@ class BaseViewSet(ModelViewSet):
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def get_serializer_context(self):
-        return {'request': self.request}
 
 
 class MedicineViewSet(BaseViewSet):
@@ -48,11 +44,12 @@ class NurseViewSet(BaseViewSet):
     @action(detail=False, methods=['post'], url_path='profile')
     def profile(self, request):
         user = request.user
-
-        serializer = NurseSerializer(data=request.data)
+        nurse, created = Nurse.objects.get_or_create(user=user)
+        
+        serializer = self.get_serializer(nurse, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        profile = Nurse.objects.create(user=user, **serializer.validated_data)
-        return Response({"detail": "Nurse profile created successfully!"}, status=status.HTTP_201_CREATED)
+        serializer.save()
+        return Response({"detail": "Nurse profile updated successfully!"}, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
 
 
 class DoctorViewSet(BaseViewSet):
@@ -122,12 +119,12 @@ class ReceptionistViewSet(BaseViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def update(self, request, *args, **kwargs):
-        patial  = kwargs.pop('patial', False)
+        partial = kwargs.pop('partial', False)  
         instance = self.get_object()
-        serializer = self.get_serializer(instance, request.data, patial)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)  
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
        
 class PatientViewSet(BaseViewSet):

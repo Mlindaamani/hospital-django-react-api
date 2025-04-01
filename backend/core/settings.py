@@ -1,4 +1,3 @@
-""" Django settings for core project. """
 from datetime import timedelta
 from pathlib import Path
 
@@ -26,17 +25,20 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ['JWT'],
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "SIGNING_KEY": "636cbc7c740ec11de11fb87bb86bc2c4d94bf08871492c603ac5754fef556885",  
+    "AUTH_HEADER_TYPES": ['JWT'],
 }
 
 DJOSER = {
     'SERIALIZERS':  {
         'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
+        "token_obtain_pair": "api.serializers.CustomTokenObtainPairSerializer",
     }
 }
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -89,7 +91,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },    
 }
 
 
@@ -122,3 +124,4 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

@@ -35,10 +35,20 @@ router.register('nurses', NurseViewSet, basename='nurses')
 
 urlpatterns = [
     # JWT Authentication URLS
-    path('auth/jwt/create/', CustomTokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
+    path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # router-generated URLs
     path('', include(router.urls)),
 ]
+
+
+# POST /auth/users/ → Register a new user
+
+# POST /auth/jwt/create/ → Log in
+
+# POST /auth/jwt/refresh/ → Refresh token
+
+# POST /auth/jwt/verify/ → Verify token
+
+# GET /auth/users/me/ → Get current user

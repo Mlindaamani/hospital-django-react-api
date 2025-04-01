@@ -9,12 +9,16 @@ from django.dispatch import receiver
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.role == RoleChoices.DOCTOR:
+            print('Creating doctor profile')
             Doctor.objects.create(user=instance)
         elif instance.role == RoleChoices.RECEPTIONIST:
+            print('Creating receptionist profile')
             Receptionist.objects.create(
                 user=instance, )
         elif instance.role == RoleChoices.LAB_TECH:
+            print('Creating lab technician profile')
             LabTechnician.objects.create(
                 user=instance, )
         elif instance.role == RoleChoices.PHARMACIST:
+            print('Creating pharmacist profile')
             Pharmacist.objects.create(user=instance)

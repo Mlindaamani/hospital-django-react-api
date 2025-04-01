@@ -9,14 +9,14 @@ from .models import (
 
 )
 
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'email', 'is_superuser', 'role']
+
+
 @admin.register(Nurse)
 class NurseAdmin(admin.ModelAdmin):
     list_display = ['user', 'year_of_experience', 'license_number']
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'email', 'is_superuser', 'role']
 
 
 @admin.register(Doctor)

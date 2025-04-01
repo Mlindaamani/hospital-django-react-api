@@ -1,33 +1,35 @@
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer,  UserSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-from .models import (
-    Doctor, Receptionist,
-    Patient,
-    LabTechnician,
-    Pharmacist, Appointment,
+from .models import User
+from .models import (Doctor, Receptionist, Patient, LabTechnician, Pharmacist, Appointment,
     Prescription, Bill, LabResult, Medicine, Nurse
 )
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = user.role
+        token['role'] = user.role 
         return token
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        fields = ['id', 'username', 'password',
-                  'email', 'first_name', 'last_name', 'role']
 
+class CustomUserCreateSerializer(UserCreateSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'password', 'role']
+
+    def create(self, validated_data):
+        password = validated_data.pop("password", None)
+        user = User.objects.create_user(password=password, **validated_data)
+        return user
 
 class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role']
+        fields= ['id', 'first_name', 'last_name', 'email', 'password', 'role']
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -40,33 +42,31 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'first_name', 'last_name',
-                  'specialization', 'phone_number', 'email']
+        fields = ['id', 'specialization', 'year_of_experience', 'bio', 'license_number']
 
 
 class ReceptionistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receptionist
-        fields = ['id', 'first_name', 'last_name', 'phone_number', 'email']
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'first_name', 'last_name',
-                  'gender', 'address', 'phone_number', 'email', 'file_number']
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class LabTechnicianSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabTechnician
-        fields = ['id', 'first_name', 'last_name', 'phone_number', 'email']
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class PharmacistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pharmacist
-        fields = ['id', 'first_name', 'last_name', 'phone_number', 'email']
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class LabResultSerializer(serializers.ModelSerializer):
@@ -96,22 +96,27 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         model = Prescription
         fields = ['id', 'patient',  'patient_name', 'patient_file_number',
                   'doctor_name', 'prescription_date', 'medicine', 'medicine_name',
-                  'instructions', 'status'
-                  ]
+                  'instructions', 'status']
 
+    
     def create(self, validated_data):
-        doctor_id = self.context['request'].user.id
-        return Prescription.objects.create(doctor_id=doctor_id, **validated_data)
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+           doctor_id = request.user.id
+           return Prescription.objects.create(doctor_id=doctor_id, **validated_data)
+        raise serializers.ValidationError("Invalid request")
 
 
 class NurseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nurse
-        fields = ['id', 'full_name', 'email',
-                  'license_number', 'year_of_experience', ]
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
     def validate_year_of_experience(self, value):
         if value < 0:
-            raise serializers.ValidationError(
-                "Year of experince cannot be less than  years")
+           raise serializers.ValidationError(
+            "Year of experience cannot be negative."
+        )
         return value
+
+

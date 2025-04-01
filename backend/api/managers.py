@@ -1,17 +1,17 @@
 from django.contrib.auth.models import BaseUserManager
+from .choices import RoleChoices
 
 class HmsAccountManager(BaseUserManager):
-    def create_user(self, email, password=None):
-        email = self.normalize_email(email=email)
-        user = self.model(email=email)
+    def create_user(self, email, password=None, **extra_fields):
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
-    def create_superuser(self, email, password):
-        email = self.normalize_email(email=email)
-        user = self.create_user(email=email, password=password)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("role", RoleChoices.ADMIN)
+        return self.create_user(email, password, **extra_fields)
+

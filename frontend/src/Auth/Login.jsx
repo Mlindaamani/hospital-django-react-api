@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { Row, Col, Container } from "react-bootstrap";
 
 export const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -16,14 +16,14 @@ export const Login = () => {
   const handleUserAuthentication = async (event) => {
     event.preventDefault();
 
-    if (username === "" || password === "") {
-      setError("Username and password cannot be empty.");
+    if (email === "" || password === "") {
+      setError("email and password cannot be empty.");
       return;
     }
     setSubmitting(true);
 
     try {
-      const { access, refresh } = await login({ username, password });
+      const { access, refresh } = await login({ email, password });
 
       storeTokens(access, refresh);
 
@@ -53,7 +53,7 @@ export const Login = () => {
           break;
       }
     } catch (error) {
-      setError("Invalid username or password.");
+      setError("Invalid email or password.");
     } finally {
       setSubmitting(false);
     }
@@ -86,15 +86,15 @@ export const Login = () => {
             autoComplete="off"
           >
             <div className="mb-3">
-              <label htmlFor="username" className="form-label fw-bold">
-                Username
+              <label htmlFor="email" className="form-label fw-bold">
+                Email
               </label>
               <input
                 type="text"
-                id="username"
+                id="email"
                 className="form-control fw-bold"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 disabled={submitting}
               />
             </div>
