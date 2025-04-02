@@ -12,7 +12,8 @@ venv/
 /backend/api/migrations/
 /backend/venv/
 __pycache__
-
+*.pyc
+/backend/media/
 
 
 # Node.js dependencies
