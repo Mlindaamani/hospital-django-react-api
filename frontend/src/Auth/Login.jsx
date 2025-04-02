@@ -1,63 +1,14 @@
 import { useState } from "react";
-import { login } from "../services/api/auth";
-import { useNavigate } from "react-router-dom";
-import { storeTokens } from "../utils/functions";
-import { Error } from "../components/Error";
-import { jwtDecode } from "jwt-decode";
+import { Toaster } from "react-hot-toast";
 import { Row, Col, Container } from "react-bootstrap";
+import { useAuthStore } from "../store/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
+  const { login, loading, user } = useAuthStore();
   const navigate = useNavigate();
-
-  const handleUserAuthentication = async (event) => {
-    event.preventDefault();
-
-    if (email === "" || password === "") {
-      setError("email and password cannot be empty.");
-      return;
-    }
-    setSubmitting(true);
-
-    try {
-      const { access, refresh } = await login({ email, password });
-
-      storeTokens(access, refresh);
-
-      const { role } = jwtDecode(access);
-
-      switch (role) {
-        case "doctor":
-          navigate("/doctor/", { replace: true });
-          break;
-        case "admin":
-          window.location.href = "http://localhost:8000/admin/";
-          break;
-        case "receptionist":
-          navigate("/receptionist/", { replace: true });
-          break;
-        case "nurse":
-          navigate("/receptionist/", { replace: true });
-          break;
-        case "lab_tech":
-          navigate("/labtech/", { replace: true });
-          break;
-        case "pharmacist":
-          navigate("/pharmacist/", { replace: true });
-          break;
-        default:
-          navigate("/login/", { replace: true });
-          break;
-      }
-    } catch (error) {
-      setError("Invalid email or password.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -79,9 +30,11 @@ export const Login = () => {
           <h4 className="text-center mt-3 mb-4 text-white">
             LOGIN TO EBOTCARE
           </h4>
-          {error && <Error error={error} />}
           <form
-            onSubmit={handleUserAuthentication}
+            onSubmit={(e) => {
+              e.preventDefault();
+              login(email, password, navigate);
+            }}
             className="p-3 text-light w-90"
             autoComplete="off"
           >
@@ -95,9 +48,10 @@ export const Login = () => {
                 className="form-control fw-bold"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                disabled={submitting}
+                disabled={loading}
               />
             </div>
+
             <div className="mb-3">
               <label htmlFor="password" className="form-label fw-bold">
                 Password
@@ -108,18 +62,19 @@ export const Login = () => {
                 className="form-control fw-bold"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                disabled={submitting}
+                disabled={loading}
               />
             </div>
             <button
               type="submit"
               className="btn w-100 text-center btn-success fw-bold rounded-4"
-              disabled={submitting}
+              disabled={loading}
             >
-              {submitting ? "Logging in..." : "Login"}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
         </Col>
+        <Toaster />
       </Row>
     </Container>
   );

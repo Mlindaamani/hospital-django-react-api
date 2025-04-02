@@ -1,15 +1,13 @@
 import axios from "axios";
-import { refreshToken } from "./auth";
 import {
   getAccessToken,
   storeTokens,
   removeTokens,
   getRefreshToken,
-} from "../../utils/functions";
+} from "../utils/functions";
 
 
 
-// Create AxiosnInstance.
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:8000",
 });

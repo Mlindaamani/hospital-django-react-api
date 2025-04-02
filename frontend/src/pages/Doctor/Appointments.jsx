@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../../services/api/config";
 import { Error } from "../../components/Error";
 import { AppointmentCard } from "../../components/AppointmentCard";
 import { filterAppointmentByCustomFields } from "../../utils/functions";
@@ -7,6 +6,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { SearchComponent } from "./SearchComponent";
 import { Link } from "react-router-dom";
 import { Loading } from "../../components/Loading";
+import { axiosInstance } from "../../config/config";
 
 export const Appointments = () => {
   const [appointments, setAppointments] = useState([]);

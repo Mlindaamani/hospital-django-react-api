@@ -3,9 +3,9 @@ import { Error } from "../../components/Error";
 import { EditPrescrModal } from "../../components/EditPrescrModal";
 import { useFetch } from "../../hooks/useCustomFetch";
 import { useState } from "react";
-import { axiosInstance } from "../../services/api/config";
 import { Loading } from "../../components/Loading";
 import { Link } from "react-router-dom";
+import { axiosInstance } from "../../config/config";
 
 export const Prescriptions = () => {
   const { data: prescriptions, loading, error } = useFetch("/prescriptions/");

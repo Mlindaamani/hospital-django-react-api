@@ -1,5 +1,5 @@
-import { axiosInstance } from "./config";
 import { removeTokens } from "../../utils/functions";
+import { axiosInstance } from "../../config/config";
 
 // Register a new user
 export const createNewStaff = async (data) => {

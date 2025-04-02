@@ -6,17 +6,16 @@ from rest_framework.decorators import action
 
 from .permissions import (
     IsAdminOrDoctor, IsReceptionist, IsPharmacist, IsAdminOrDoctorOrLabTech, IsNurse,
-    IsAdmin, IsAdminOrDoctorOrReceptionist
-)
-from .choices import RoleChoices
+    IsAdmin, IsAdminOrDoctorOrReceptionist)
+
 from .serializers import (
     DoctorSerializer, ReceptionistSerializer, PatientSerializer,
     LabResultSerializer, PharmacistSerializer, LabTechnicianSerializer,
     AppointmentSerializer, BillSerializer, PrescriptionSerializer,
-    CustomTokenObtainPairSerializer, MedicineSerializer, NurseSerializer
-)
-from .models import (Doctor, Receptionist, Patient, LabResult, Pharmacist, LabTechnician, Appointment, Bill, Prescription, Medicine, Nurse)
+    CustomTokenObtainPairSerializer, MedicineSerializer, NurseSerializer)
 
+from .models import (Doctor, Receptionist, Patient, LabResult, Pharmacist, LabTechnician, Appointment, Bill, Prescription, Medicine, Nurse)
+from .choices import RoleChoices
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

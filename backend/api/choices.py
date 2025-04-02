@@ -6,12 +6,14 @@ class RoleChoices:
     LAB_TECH = 'lab_tech'
     PHARMACIST = 'pharmacist'
     NURSE = 'nurse'
+    PATIENT='patient'
     ROLE_CHOICES = [
         (ADMIN, 'Admin'), (DOCTOR, 'Doctor'),
         (RECEPTIONIST, 'Receptionist'),
         (LAB_TECH, 'Lab Technician'),
         (PHARMACIST, 'Pharmacist'),
-        (NURSE, 'Nurse')
+        (NURSE, 'Nurse'),
+        (PATIENT, 'Patient')
     ]
     
 

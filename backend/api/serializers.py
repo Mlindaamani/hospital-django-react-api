@@ -12,9 +12,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = user.role 
+        token['role'] = user.role
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
+        token['email'] = user.email
         return token
-
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -29,7 +31,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
-        fields= ['id', 'first_name', 'last_name', 'email', 'password', 'role']
+        fields= ['id', 'first_name', 'last_name', 'email', 'role']
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -54,13 +56,27 @@ class ReceptionistSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'specialization', 'year_of_experience', 'bio']
+        fields = [
+            'id', 
+            'user',
+            'file_number',
+            'address',
+            'has_insurance',
+            'profile_picture', 
+            'has_insurance',
+            'gender',
+        ]
 
 
 class LabTechnicianSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabTechnician
-        fields = ['id', 'specialization', 'year_of_experience', 'bio']
+        fields = [
+            'id',
+              'specialization', 
+            'year_of_experience',
+            'bio'
+            ]
 
 
 class PharmacistSerializer(serializers.ModelSerializer):

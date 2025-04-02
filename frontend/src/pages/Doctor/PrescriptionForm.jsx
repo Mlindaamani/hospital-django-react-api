@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Col, Container, Form, InputGroup, Row, Button } from "react-bootstrap";
 import { MedicineSelect } from "./MedicineSelect";
-import { axiosInstance } from "../../services/api/config";
-
+import { axiosInstance } from "../../config/config";
 
 export const PrescriptionForm = ({
   patientId,

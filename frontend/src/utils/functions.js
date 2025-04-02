@@ -3,6 +3,15 @@ export const storeTokens = (accessToken, refreshToken) => {
   localStorage.setItem("refreshToken", refreshToken);
 };
 
+export const ROLE = {
+  ADMIN: "admin",
+  DOCTOR: "doctor",
+  RECEPTIONIST: "receptionist",
+  NURSE: "nurse",
+  LAB_TECH: "lab_tech",
+  PHARMACIST: "pharmacist",
+};
+
 export const getAccessToken = () => {
   return localStorage.getItem("accessToken");
 };
@@ -72,3 +81,5 @@ export const colorStatus = (status) => {
       return "text-secondary fw-bold fs-5";
   }
 };
+
+export const getBackendErrorMessage = (error) => error.response?.data?.message;

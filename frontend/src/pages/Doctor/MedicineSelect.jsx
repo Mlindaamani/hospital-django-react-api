@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../../services/api/config";
 import { Form } from "react-bootstrap";
+import { axiosInstance } from "../../config/config";
 
 export const MedicineSelect = ({
   title = "Select Medicines",

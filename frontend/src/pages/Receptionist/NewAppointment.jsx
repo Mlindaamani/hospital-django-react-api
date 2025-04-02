@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useFetch } from "../../hooks/useCustomFetch";
 import { Container, Form, Button } from "react-bootstrap";
-import { axiosInstance } from "../../services/api/config";
-
+import { axiosInstance } from "../../config/config";
 
 export const NewAppointment = () => {
   const { data: patients } = useFetch("/patients/");

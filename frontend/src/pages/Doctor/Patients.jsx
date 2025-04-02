@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { axiosInstance } from "../../services/api/config";
 import { Container, Row, Col, Table } from "react-bootstrap";
 import { Error } from "../../components/Error";
 import { filterPatients } from "../../utils/functions";
 import { SearchComponent } from "./SearchComponent";
 import { Loading } from "../../components/Loading";
+import { axiosInstance } from "../../config/config";
 
 export const Patients = () => {
   const [patients, setPatients] = useState([]);

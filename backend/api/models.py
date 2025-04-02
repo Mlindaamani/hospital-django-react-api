@@ -22,7 +22,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
     
     def __str__(self):
-        return f"{self.first_name or ''} {self.last_name or ''}".strip()
+        return f"{self.first_name or ''} --> {self.role or ''}".strip()
     
     @property
     def full_name(self):
@@ -30,8 +30,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name or ""
+    
 
-# Base Profile Model
 class BaseProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     year_of_experience = models.IntegerField(validators=[MinValueValidator(0)], default=0)
@@ -40,11 +40,17 @@ class BaseProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def delete(self):
+        self.profile_picture.delete()
+        super().delete()
+
+
     class Meta:
         abstract = True
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+    
     
 class Nurse(BaseProfile):
     license_number = models.CharField(max_length=255, blank=True, null=True)
@@ -63,7 +69,7 @@ class Nurse(BaseProfile):
         return f"{self.user.email}"
 
     def __str__(self):
-        return f"{self.user.first_name}-{self.user.last_name}: {self.lecense_number}"
+        return f"{self.user.first_name}-{self.user.last_name}: {self.license_number}"
     
     @property
     def get_email_and_username(self):
@@ -81,15 +87,39 @@ class Doctor(BaseProfile):
     def full_name(self):
         return f"{self.user.first_name}-{self.user.last_name}"
     
+    
+class Receptionist(BaseProfile):
+    specialization = models.CharField(max_length=100, default='General')
+
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+
+class LabTechnician(BaseProfile):
+    specialization = models.CharField(max_length=100,default='General')
+    license_number = models.CharField(max_length=255, unique=True)
+    
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+
+class Pharmacist(BaseProfile):
+    specialization = models.CharField(max_length=100, default='General')
+    license_number = models.CharField(max_length=255, blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+    
 
 class Patient(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
     gender = models.CharField(
         max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
-    file_number = models.CharField(max_length=255, unique=True)
-    date_of_birth = models.DateField()
-    address = models.TextField()
+    file_number = models.CharField(max_length=255, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
     has_insurance = models.BooleanField(default=False)
     insurance_number = models.CharField(max_length=255, blank=True, null=True)
     is_discharged = models.BooleanField(default=False)
@@ -105,10 +135,8 @@ class Patient(models.Model):
         if not self.has_insurance:
             self.insurance_number = None
         super().save(*args, **kwargs)
+
         
-
-
-
 class Appointment(models.Model):
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, related_name='appointments')
@@ -141,30 +169,6 @@ class Appointment(models.Model):
     def __str__(self):
         return f"Appointment with Dr. {self.doctor.user.last_name} for {self.patient.user.first_name} {self.patient.user.last_name}"
 
-
-class Receptionist(BaseProfile):
-    specialization = models.CharField(max_length=100, default='General')
-
-
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-
-class LabTechnician(BaseProfile):
-    specialization = models.CharField(max_length=100,default='General')
-    license_number = models.CharField(max_length=255, unique=True)
-    
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-
-class Pharmacist(BaseProfile):
-    specialization = models.CharField(max_length=100, default='General')
-    license_number = models.CharField(max_length=255, blank=True, null=True)
-    
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
- 
 
 class Medicine(models.Model):
     name = models.CharField(max_length=255)
@@ -204,6 +208,7 @@ class Prescription(models.Model):
 
     def __str__(self):
         return f"Prescription for {self.patient.user.first_name} {self.patient.user.last_name}"
+    
 
 class Bill(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -226,7 +231,6 @@ class Bill(models.Model):
 
 
 class LabResult(models.Model):
-    
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     lab_technician = models.ForeignKey(
         LabTechnician, on_delete=models.SET_NULL, null=True)

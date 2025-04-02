@@ -86,6 +86,5 @@ class BillAdmin(admin.ModelAdmin):
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
     list_display = ['user__first_name', 'user__last_name', 'gender', 'address',
-                    'user__phone_number', 'user__email',  'file_number', 'created_at']
-    list_filter = ['created_at']
-    list_per_page = 30
+                    'user__phone_number', 'user__email',  'file_number']
+    list_per_page = 10

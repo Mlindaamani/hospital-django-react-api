@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { axiosInstance } from "../../services/api/config";
+import { axiosInstance } from "../../config/config";
 
 export const Nurse = () => {
   const [lecense, setLecense] = useState("");
