@@ -1,10 +1,10 @@
 import { Container, ListGroup } from "react-bootstrap";
 import { Error } from "../../components/Error";
-import { useFetch } from "../../hooks/useCustomFetch";
 import { Loading } from "../../components/Loading";
+import { useLabResultsStore } from "../../store/labresultsStore";
 
 export const LabTests = () => {
-  const { data: labresults, loading, error } = useFetch("/labresults/");
+  const { results: labresults, loading, error } = useLabResultsStore();
 
   if (loading) return <Loading />;
 

@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useFetch } from "../../hooks/useCustomFetch";
 import { Container, Form, Button } from "react-bootstrap";
-import { axiosInstance } from "../../config/config";
+import { useAppointmentStore } from "../../store/appointmentStore";
+import { useDoctorStore } from "../../store/doctorStore";
+import { usePatientsStore } from "../../store/patientsStore";
 
 export const NewAppointment = () => {
-  const { data: patients } = useFetch("/patients/");
-  const { data: doctors } = useFetch("/doctors/");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { doctors } = useDoctorStore();
+  const { createAppointment } = useAppointmentStore();
+  const { patients } = usePatientsStore();
+
   const [appointmentData, setAppointmentData] = useState({
     patient: "",
     doctor: "",
@@ -20,23 +21,10 @@ export const NewAppointment = () => {
     setAppointmentData({ ...appointmentData, [name]: value });
   };
 
-  const handleAppointmentSubmit = async (event) => {
-    setLoading(true);
+  const handleAppointmentSubmit = (event) => {
     event.preventDefault();
-    try {
-      await axiosInstance.post("/appointments/", appointmentData);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+    createAppointment(appointmentData);
   };
-
-  if (loading) return <div>Creating the appointment</div>;
-
-  if (error) {
-    return <div>Sorry error has occured while creating the appointment</div>;
-  }
 
   return (
     <Container className="mt-5 vh-100">

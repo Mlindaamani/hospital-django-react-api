@@ -1,16 +1,15 @@
 import { Button, Container, ListGroup } from "react-bootstrap";
 import { Error } from "../../components/Error";
 import { EditPrescrModal } from "../../components/EditPrescrModal";
-import { useFetch } from "../../hooks/useCustomFetch";
 import { useState } from "react";
 import { Loading } from "../../components/Loading";
 import { Link } from "react-router-dom";
-import { axiosInstance } from "../../config/config";
+import { usePrescriptionStore } from "../../store/prescriptionStore";
 
 export const Prescriptions = () => {
-  const { data: prescriptions, loading, error } = useFetch("/prescriptions/");
+  const { prescriptions, loading, error, getPrescription, prescription } =
+    usePrescriptionStore();
 
-  const [prescription, setPresription] = useState({});
   const [show, setShow] = useState(false);
 
   const handleModelClose = () => {
@@ -19,10 +18,7 @@ export const Prescriptions = () => {
 
   const handleEditPrescription = async (prescriptionId) => {
     setShow(true);
-    const response = await axiosInstance.get(
-      `/prescriptions/${prescriptionId}/`
-    );
-    setPresription(response.data);
+    getPrescription(prescriptionId);
   };
 
   if (loading) return <Loading />;

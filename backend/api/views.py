@@ -4,6 +4,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
 from rest_framework.decorators import action
 
+
+
 from .permissions import (
     IsAdminOrDoctor, IsReceptionist, IsPharmacist, IsAdminOrDoctorOrLabTech, IsNurse,
     IsAdmin, IsAdminOrDoctorOrReceptionist)
@@ -23,6 +25,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class BaseViewSet(ModelViewSet):
+    
     def destroy(self, request, pk):
         instance = self.get_object()
         instance.delete()

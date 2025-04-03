@@ -9,11 +9,17 @@ import {
   Tabs,
   Tab,
 } from "react-bootstrap";
-import { useFetch } from "../../hooks/useCustomFetch";
+import { useAppointmentStore } from "../../store/appointmentStore";
 
 export const AppointmentDetail = () => {
   const { id } = useParams();
-  const { data: appointment, loading, error } = useFetch(`/appointments/${id}`);
+  const { appointment, loading, getAppointment, error } = useAppointmentStore();
+
+  console.log(appointment);
+
+  useEffect(() => {
+    getAppointment(id);
+  }, [id]);
 
   if (loading) return <Loading />;
 
@@ -30,7 +36,11 @@ export const AppointmentDetail = () => {
         </Link>
       </p>
 
-      <Tabs defaultActiveKey="medical-history" id="appointment-detail" className="mt-5">
+      <Tabs
+        defaultActiveKey="medical-history"
+        id="appointment-detail"
+        className="mt-5"
+      >
         <Tab eventKey="detail" title="Detail">
           <ListGroup>
             <ListGroupItem>{appointment.patient_name}</ListGroupItem>
@@ -50,90 +60,6 @@ export const AppointmentDetail = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
-              <tr>
-                <td>Solo</td>
-                <td>Jumanne</td>
-                <td>Radiography</td>
-                <td>Malaria</td>
-                <td>10/2/2022</td>
-              </tr>
               <tr>
                 <td>Solo</td>
                 <td>Jumanne</td>

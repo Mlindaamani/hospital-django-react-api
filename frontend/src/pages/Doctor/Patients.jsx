@@ -1,38 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table } from "react-bootstrap";
 import { Error } from "../../components/Error";
-import { filterPatients } from "../../utils/functions";
 import { SearchComponent } from "./SearchComponent";
 import { Loading } from "../../components/Loading";
-import { axiosInstance } from "../../config/config";
+import { usePatientsStore } from "../../store/patientsStore";
+import { filterPatients } from "../../utils/functions";
 
 export const Patients = () => {
-  const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredPatients, setFilteredPatients] = useState([]);
+  const { patients, loading, error, getPatients } = usePatientsStore();
 
   useEffect(() => {
-    const fetchPatients = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get("/patients");
-        setPatients(response.data);
-      } catch (error) {
-        setLoading(false);
-        console.error(error);
-        setError("Failed to fetch patients. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPatients();
-  }, []);
+    getPatients();
+  }, [getPatients]);
 
-  useEffect(() => {
-    setFilteredPatients(filterPatients(patients, searchTerm));
-  }, [searchTerm, patients]);
+  const filteredPatients = filterPatients(patients, searchTerm);
 
   if (error) return <Error error={error} />;
 
@@ -69,7 +51,7 @@ export const Patients = () => {
 
             <tbody>
               {filteredPatients.map((patient) => (
-                <tr>
+                <tr key={patient.id}>
                   <td>{patient.file_number}</td>
                   <td>{patient.first_name}</td>
                   <td>{patient.last_name}</td>

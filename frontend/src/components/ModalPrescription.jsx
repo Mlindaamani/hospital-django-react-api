@@ -1,21 +1,18 @@
+import React from "react";
 import { Modal } from "react-bootstrap";
+import { useModalStore } from "../store/modalStore";
 import { PrescriptionForm } from "../pages/Doctor/PrescriptionForm";
 
-export const PrescriptionModal = ({
-  patientId,
-  patientName,
-  fileNumber,
-  size = "md",
-  show,
-  onHide,
-  centered = true,
-}) => {
+export const PrescriptionModal = () => {
+  const { show, patientId, patientName, fileNumber, closeModal } =
+    useModalStore();
+
   return (
     <Modal
-      onHide={onHide}
+      onHide={closeModal}
       show={show}
-      centered={centered}
-      size={size}
+      centered={true}
+      size="md"
       scrollable={true}
       backdrop={true}
       backdropClassName="bg-dark bg-body-opacity-50"

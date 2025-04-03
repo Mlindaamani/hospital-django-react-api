@@ -13,15 +13,16 @@ export const useAuthStore = create(
       loading: false,
       isAuthenticated: !!getAccessToken(),
 
-      register: async (username, email, password, navigate) => {
-        if (!username || !email || !password) {
-          return toast.error("Please fill out all fields!");
-        }
+      register: async (first_name, last_name, email, password, navigate) => {
+        if (!first_name || !last_name || !email || !password)
+          return toast.error("All field are required!");
+
         set({ loading: true, error: null });
 
         try {
           await axiosInstance.post("/auth/users/", {
-            username,
+            first_name,
+            last_name,
             email,
             password,
           });
@@ -43,9 +44,7 @@ export const useAuthStore = create(
       },
 
       login: async (email, password, navigate) => {
-        console.log("Code executed to thuis point");
         if (!email || !password) return toast.error("All field are required!");
-
         set({ loading: true });
 
         try {
@@ -56,15 +55,19 @@ export const useAuthStore = create(
             })
           ).data;
 
-          const { user_id, first_name, last_name, role, email } =
-            jwtDecode(access);
-
+          const {
+            user_id,
+            first_name,
+            last_name,
+            role,
+            email: decodeEmail,
+          } = jwtDecode(access);
           storeTokens(access, refresh);
 
           set({
             isAuthenticated: true,
             loading: false,
-            user: { user_id, first_name, last_name, email, role },
+            user: { user_id, first_name, last_name, email: decodeEmail, role },
           });
 
           switch (role) {
@@ -103,6 +106,7 @@ export const useAuthStore = create(
             id: "login",
           });
         } catch (error) {
+          console.log(error);
           set({ loading: false });
           toast.error(getBackendErrorMessage(error), {
             duration: 2000,
@@ -119,6 +123,6 @@ export const useAuthStore = create(
       },
     }),
 
-    { name: "auth-storage", getStorage: () => localStorage }
+    { name: "hms-storage", getStorage: () => localStorage }
   )
 );

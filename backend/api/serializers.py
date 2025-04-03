@@ -59,6 +59,8 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'user',
+            'first_name',
+            'last_name',
             'file_number',
             'address',
             'has_insurance',

@@ -1,6 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import { AuthRequired } from "./components/ProtectedRoutes";
+
+// import { Home } from "./app/Home";
+// import { NavigationBar } from "./app/NavigationBar";
+// import { Footer } from "./app/Footer";
+// import { PatientDashboard } from "./app/pages/PatientDashboard";
+// import { DoctorDashboard } from "./app/pages/DoctorDashboard";
+// import { LabTechnicianDashboard } from "./app/pages/LabTechnicianDashboard";
+// import { ReceptionistDashboard } from "./app/pages/ReceptionistDashboard";
+
 import { NotFound } from "./components/NotFound";
 import { Login } from "./Auth/Login";
 import { HomePage } from "./pages/Home";
@@ -20,7 +28,6 @@ export const App = () => {
     <Routes>
       <Route path="/" element={<AppLayout />}>
         <Route index element={<HomePage />} />
-        <Route element={<AuthRequired />}>
           {/* Doctor's Routes */}
           <Route path="doctor" element={<DoctorLayout />}>
             <Route index element={<DoctorDashboard />} />
@@ -34,7 +41,6 @@ export const App = () => {
           <Route path="receptionist" element={<ReceptionistLayout />}>
             <Route index element={<ReceptionistDashboard />} />
           </Route>
-        </Route>
 
         <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFound />} />
@@ -42,3 +48,4 @@ export const App = () => {
     </Routes>
   );
 };
+

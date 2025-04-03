@@ -71,10 +71,6 @@ class Nurse(BaseProfile):
     def __str__(self):
         return f"{self.user.first_name}-{self.user.last_name}: {self.license_number}"
     
-    @property
-    def get_email_and_username(self):
-        return f"{self.user.username}-{self.user.password}"
-
 
 class Doctor(BaseProfile):
     specialization = models.CharField(max_length=100)
@@ -117,9 +113,9 @@ class Patient(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
     gender = models.CharField(
         max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
-    file_number = models.CharField(max_length=255, blank=True, null=True)
+    file_number = models.CharField(max_length=255, default='Not file number yet')
     date_of_birth = models.DateField(blank=True, null=True)
-    address = models.TextField(blank=True, null=True)
+    address = models.TextField(default="Not yet provided")
     has_insurance = models.BooleanField(default=False)
     insurance_number = models.CharField(max_length=255, blank=True, null=True)
     is_discharged = models.BooleanField(default=False)
@@ -135,6 +131,14 @@ class Patient(models.Model):
         if not self.has_insurance:
             self.insurance_number = None
         super().save(*args, **kwargs)
+        
+    @property
+    def first_name(self):
+        return self.user.first_name
+    
+    @property
+    def last_name(self):
+        return self.user.last_name
 
         
 class Appointment(models.Model):

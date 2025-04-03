@@ -7,8 +7,13 @@ import { useNavigate } from "react-router-dom";
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loading, user } = useAuthStore();
+  const { login, loading } = useAuthStore();
   const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(email, password, navigate);
+  };
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -31,10 +36,7 @@ export const Login = () => {
             LOGIN TO EBOTCARE
           </h4>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              login(email, password, navigate);
-            }}
+            onSubmit={handleSubmit}
             className="p-3 text-light w-90"
             autoComplete="off"
           >
