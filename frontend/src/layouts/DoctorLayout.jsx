@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { DashboardHeader } from "./DashboardHeader";
-import { DoctorSidebar } from "./Sidebar";
+import { DashboardHeader } from "../components/DashboardHeader";
+import { DoctorSidebar } from "../components/Sidebar";
 
 export const DoctorLayout = () => {
   return (

@@ -31,6 +31,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name or ""
     
+    def send_monthly_report(self):
+        # Logic to send monthly report
+        print(f"Monthly report sent to {self.email}")
+    
 
 class BaseProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

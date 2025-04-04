@@ -1,26 +1,80 @@
-import { Nav, Container, Navbar } from "react-bootstrap";
+import { useNavigate, Link } from "react-router-dom";
+import { Image } from "react-bootstrap";
+import sound from "../assets/svg/sound.svg";
 import { useAuthStore } from "../store/AuthStore";
-import { useNavigate } from "react-router-dom";
+import { navigateTo } from "../utils/functions";
 
-export const NavigationBar = ({ user }) => {
-  const { logout } = useAuthStore();
+export const NavigationBar = () => {
+  const { isAuthenticated, logout, user } = useAuthStore();
   const navigate = useNavigate();
+
   return (
-    <Navbar bg="primary" className="fixed-top p-2">
-      <Container>
-        <Navbar.Brand className="text-light p-3">EBOT-CARE</Navbar.Brand>
-        <Navbar.Toggle />
+    <nav
+      className="navbar navbar-expand-lg navbar-dark p-4 chat-app"
+      data-bs-theme="dark"
+    >
+      <div className="container-fluid auth-bg">
+        <Link
+          className="navbar-brand d-flex gap-2 justify-content-center align-items-center fw-bold fs-4 text-light"
+          to="/"
+        >
+          <Image src={sound} />
+          eChat
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-        <Navbar.Collapse className="d-flex justify-content-end gap-5">
-          <Nav.Link className="fw-bold disabled fs-5 p-3 text-light">
-            {user?.first_name} {user?.last_name}
-          </Nav.Link>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link">Features</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="#price">
+                Pricing
+              </Link>
+            </li>
 
-          <Nav.Link onClick={() => logout(navigate)} className="text-light p-2">
-            Logout
-          </Nav.Link>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+            {isAuthenticated ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to={navigateTo(user)}>
+                    Dashboard
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <button
+                    className="nav-link btn btn-link text-light"
+                    onClick={() => {
+                      logout(navigate);
+                    }}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">
+                    Signup
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 };

@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import create from "zustand";
 import { persist } from "zustand/middleware";
-import { getBackendErrorMessage, ROLE } from "../utils/functions";
+import { getBackendErrorMessage, redirectTo } from "../utils/functions";
 import { axiosInstance } from "../config/config";
 import { jwtDecode } from "jwt-decode";
 import { removeTokens, storeTokens, getAccessToken } from "../utils/functions";
@@ -69,37 +69,8 @@ export const useAuthStore = create(
             loading: false,
             user: { user_id, first_name, last_name, email: decodeEmail, role },
           });
-
-          switch (role) {
-            case ROLE.DOCTOR:
-              navigate("/doctor/");
-              break;
-
-            case ROLE.ADMIN:
-              window.location.href = "http://localhost:8000/admin/";
-              break;
-
-            case ROLE.RECEPTIONIST:
-              navigate("/receptionist/", { replace: true });
-              break;
-
-            case ROLE.NURSE:
-              navigate("/nurse/", { replace: true });
-              break;
-
-            case ROLE.LAB_TECH:
-              navigate("/labtech/", { replace: true });
-              break;
-
-            case ROLE.PHARMACIST:
-              navigate("/pharmacist/", { replace: true });
-              break;
-
-            default:
-              navigate("/", { replace: true });
-              break;
-          }
-
+          // Redirect user to the appropriate page based on their role
+          redirectTo(navigate, role);
           toast.success("You have successfully logged in.", {
             duration: 4000,
             position: "top-right",

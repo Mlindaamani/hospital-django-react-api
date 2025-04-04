@@ -6,6 +6,8 @@ import { SearchComponent } from "./SearchComponent";
 import { Link } from "react-router-dom";
 import { Loading } from "../../components/Loading";
 import { useAppointmentStore } from "../../store/appointmentStore";
+import event from "../../assets/svg/event.svg";
+import { Image } from "react-bootstrap";
 
 export const Appointments = () => {
   const { appointments, loading, getAppointments } = useAppointmentStore();
@@ -25,19 +27,32 @@ export const Appointments = () => {
 
   if (appointments.length === 0) {
     return (
-      <Container className="d-flex justify-content-center align-items-center flex-column">
-        <h4 className="mb-5"> 😴 No Appointment yet</h4>
-        <h5>
-          <Link to="/doctor/" className="text-decoration-none">
+      <Container className="d-flex justify-content-center align-items-center flex-column h-100">
+        <div className="text-center">
+          <Image
+            src={event}
+            fluid
+            className="mb-3 rounded-2"
+            style={{ maxWidth: "80px" }}
+          />
+          <h4 className="mb-5">No Appointments Scheduled</h4>
+          <p className="mb-5 text-secondary">
+            You don't have any appointments scheduled yet.
+          </p>
+          <Link
+            to="/doctor"
+            className="btn text-light"
+            style={{ backgroundColor: "#2D4263" }}
+          >
             View Analytics
           </Link>
-        </h5>
+        </div>
       </Container>
     );
   }
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-2">
       <SearchComponent
         handleOnChange={(e) => setQuery(e.target.value)}
         searchTerm={query}

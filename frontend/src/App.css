@@ -3,6 +3,7 @@
   margin-top: 20px;
   transition: transform 0.3s ease-in-out;
 }
+
 .appointment,
 .labtest {
   cursor: pointer;
@@ -12,7 +13,7 @@
   transform: translateZ(20px) scale(1.1);
 }
 .appointment:hover {
-  transform: translateZ(20px) scale(1.1);
+  transform: translateZ(10px) scale(1.1);
 }
 
 .modal-open {
@@ -26,11 +27,10 @@
   gap: 32px;
 }
 
-
-
 .med-card {
   cursor: pointer;
 }
+
 .med-card {
   transition: transform 0.3s ease-in-out;
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { useModalStore } from "../store/modalStore";
-import { PrescriptionForm } from "../pages/Doctor/PrescriptionForm";
+import { PrescriptionForm } from "../pages/doctor/PrescriptionForm";
 
 export const PrescriptionModal = () => {
   const { show, patientId, patientName, fileNumber, closeModal } =

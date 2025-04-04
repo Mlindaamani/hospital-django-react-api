@@ -12,6 +12,57 @@ export const ROLE = {
   PHARMACIST: "pharmacist",
 };
 
+export const navigateTo = (user) => {
+  switch (user.role) {
+    case ROLE.ADMIN:
+      return "/admin";
+    case ROLE.DOCTOR:
+      return "/doctor";
+    case ROLE.RECEPTIONIST:
+      return "/receptionist";
+    case ROLE.NURSE:
+      return "/nurse";
+    case ROLE.LAB_TECH:
+      return "/lab_tech/";
+    case ROLE.PHARMACIST:
+      return "/pharmacist";
+    default:
+      return "/";
+  }
+};
+
+export const redirectTo = (navigate, role) => {
+  switch (role) {
+    case ROLE.DOCTOR:
+      navigate("/doctor/");
+      break;
+
+    case ROLE.ADMIN:
+      window.location.href = "http://localhost:8000/admin/";
+      break;
+
+    case ROLE.RECEPTIONIST:
+      navigate("/receptionist/", { replace: true });
+      break;
+
+    case ROLE.NURSE:
+      navigate("/nurse/", { replace: true });
+      break;
+
+    case ROLE.LAB_TECH:
+      navigate("/labtech/", { replace: true });
+      break;
+
+    case ROLE.PHARMACIST:
+      navigate("/pharmacist/", { replace: true });
+      break;
+
+    default:
+      navigate("/", { replace: true });
+      break;
+  }
+};
+
 export const getAccessToken = () => {
   return localStorage.getItem("access");
 };
@@ -121,3 +172,16 @@ export const formatDjangoDateTime = (djangoDateTime) => {
 };
 
 export const getBackendErrorMessage = (error) => error.response?.data?.message;
+
+export const roleBadgeColor = (role) => {
+  switch (role) {
+    case "admin":
+      return "bg-danger";
+    case "moderator":
+      return "bg-warning text-dark";
+    case "guest":
+      return "bg-secondary";
+    default:
+      return "bg-primary";
+  }
+};

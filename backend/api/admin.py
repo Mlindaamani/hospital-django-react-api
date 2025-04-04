@@ -14,7 +14,13 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'first_name', 'last_name', 'email', 'is_superuser', 'role']
     list_per_page = 30
     list_editable = ['role']
+    actions = ["send_email"]
 
+    def send_email(self, request, queryset):
+        for obj in queryset:
+            obj.send_monthly_report()
+            self.message_user(request, f"Monthly report sent to {obj.email}")
+    
 
 @admin.register(Nurse)
 class NurseAdmin(admin.ModelAdmin):

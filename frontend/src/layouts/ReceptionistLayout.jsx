@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { DashboardHeader } from "./DashboardHeader";
-import { ReceptionistSidebar } from "./Sidebar";
+import { DashboardHeader } from "../components/DashboardHeader";
+import { ReceptionistSidebar } from "../components/Sidebar";
 
 export const ReceptionistLayout = () => {
   return (

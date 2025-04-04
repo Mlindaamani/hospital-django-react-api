@@ -131,84 +131,6 @@ export const Analytics = () => {
                       1
                     </span>
                   </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center">
-                    A third list item
-                    <span className="badge text-bg-primary rounded-pill">
-                      1
-                    </span>
-                  </li>
                 </ul>
               </div>
             </div>
@@ -219,16 +141,6 @@ export const Analytics = () => {
                 <h5 className="card-title text-secondary mb-2">Members</h5>
                 <p className="card-text">4.4M</p>
                 <div className="list-group">
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
-                  <p className="list-group-item">John Doe</p>
                   <p className="list-group-item">John Doe</p>
                   <p className="list-group-item">John Doe</p>
                 </div>
