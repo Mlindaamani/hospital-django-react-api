@@ -1,5 +1,6 @@
 import create from "zustand";
 import { getBackendErrorMessage } from "../utils/functions";
+import { axiosInstance } from "../config/config";
 
 export const usePrescriptionStore = create((set) => ({
   prescriptions: [],

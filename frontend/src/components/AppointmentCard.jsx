@@ -6,8 +6,11 @@ import { useAppointmentStore } from "../store/appointmentStore";
 
 export const AppointmentCard = ({ appointment }) => {
   const [show, setShow] = useState(false);
-  const { markAppointmentAsCompleted, deleteAppointment } =
-    useAppointmentStore();
+  const {
+    markAppointmentAsCompleted,
+    deleteAppointment,
+    completingAppointment,
+  } = useAppointmentStore();
 
   const handleComplete = async () => {
     await markAppointmentAsCompleted(appointment.id);
@@ -18,7 +21,7 @@ export const AppointmentCard = ({ appointment }) => {
   };
 
   return (
-    <Card className="rounded-3 appointment" border="info">
+    <Card className="rounded-3 appointment card-hover" border="info">
       <PrescriptionModal
         patientId={appointment.patient}
         patientName={appointment.patient_name}
@@ -71,7 +74,7 @@ export const AppointmentCard = ({ appointment }) => {
           onClick={handleComplete}
           size="sm"
         >
-          Completed
+          {completingAppointment ? "marking..." : "Completed"}
         </Button>
 
         <Button

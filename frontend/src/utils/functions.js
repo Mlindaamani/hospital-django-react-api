@@ -69,7 +69,6 @@ export const filterAppointmentByCustomFields = (
 ) => {
   const searchQueryLower = searchTerm.toLowerCase();
 
-  // If the searchTerm is empty, return all appointments
   if (!searchTerm) {
     return appointments;
   }
@@ -78,7 +77,6 @@ export const filterAppointmentByCustomFields = (
     // Check each field for a match
     return fields.some((field) => {
       const fieldValue = appointment[field];
-      // Ensure fieldValue is a string and convert to lowercase
       return (
         typeof fieldValue === "string" &&
         fieldValue.toLowerCase().includes(searchQueryLower)
@@ -90,35 +88,24 @@ export const filterAppointmentByCustomFields = (
 export const colorStatus = (status) => {
   switch (status) {
     case "Scheduled":
-      return "text-warning fw-bold fs-5";
+      return "text-warning fw-bold";
     case "Cancelled":
-      return "text-danger fw-bold fs-5";
+      return "text-danger fw-bold";
     case "Completed":
-      return "text-success fw-bold fs-5 text-decoration-line-through";
+      return "text-success fw-bold text-decoration-line-through";
     default:
-      return "text-secondary fw-bold fs-5";
+      return "text-secondary fw-bold";
   }
 };
 
-/**
- * Formats a Django datetime string into a more readable format.
- * @param {string} djangoDateTime - The Django datetime string (ISO 8601 format).
- * @param {string} format - The desired output format (default is 'YYYY-MM-DD HH:mm:ss').
- * @returns {string} - The formatted date string.
- */
-export const formatDjangoDateTime = (
-  djangoDateTime,
-  format = "YYYY-MM-DD HH:mm:ss"
-) => {
+export const formatDjangoDateTime = (djangoDateTime) => {
   if (!djangoDateTime) return "";
 
-  // Create a Date object from the Django datetime string
   const date = new Date(djangoDateTime);
 
   // Check if the date is valid
   if (isNaN(date.getTime())) return "";
 
-  // Format the date based on the specified format
   const options = {
     year: "numeric",
     month: "2-digit",
@@ -126,14 +113,11 @@ export const formatDjangoDateTime = (
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: false, // Use 24-hour format
+    hour12: false,
   };
-
-  // Format the date using toLocaleString
   const formattedDate = date.toLocaleString("en-US", options);
 
-  // Return the formatted date
-  return formattedDate.replace(",", ""); // Remove the comma for better formatting
+  return formattedDate.replace(",", "");
 };
 
 export const getBackendErrorMessage = (error) => error.response?.data?.message;

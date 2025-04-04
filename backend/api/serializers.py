@@ -3,9 +3,8 @@ from djoser.serializers import UserCreateSerializer,  UserSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
 from .models import (Doctor, Receptionist, Patient, LabTechnician, Pharmacist, Appointment,
-    Prescription, Bill, LabResult, Medicine, Nurse
-)
-
+    Prescription, Bill, LabResult, Medicine, Nurse)
+from .choices import   PrescriptionChoice
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
@@ -73,12 +72,7 @@ class PatientSerializer(serializers.ModelSerializer):
 class LabTechnicianSerializer(serializers.ModelSerializer):
     class Meta:
         model = LabTechnician
-        fields = [
-            'id',
-              'specialization', 
-            'year_of_experience',
-            'bio'
-            ]
+        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class PharmacistSerializer(serializers.ModelSerializer):
@@ -91,8 +85,9 @@ class LabResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LabResult
-        fields = ['id', 'patient_name', 'patient_file_number', 'doctor_specialization',
-                  'lab_technician_name', 'test_type', 'result', 'date_conducted', 'status']
+        fields = ['id', 'test_type', 'result', 'patient', 'patient_name', 'patient_file_number', 
+                  'date_conducted','status',  'lab_technician', 'lab_technician_name', 'lab_technician_license_number'
+                  ]
 
 
 class BillSerializer(serializers.ModelSerializer):
@@ -118,11 +113,20 @@ class PrescriptionSerializer(serializers.ModelSerializer):
 
     
     def create(self, validated_data):
-        request = self.context.get('request', None)
-        if request and request.user.is_authenticated:
+        request = self.context['request']
+        
+        if request.user.is_authenticated:
            doctor_id = request.user.id
            return Prescription.objects.create(doctor_id=doctor_id, **validated_data)
         raise serializers.ValidationError("Invalid request")
+    
+    def delete(self, instance):
+        # Check if the prescription is completed
+        if instance.status == PrescriptionChoice.STATUS_DESPENSED:
+            raise serializers.ValidationError("Cannot delete a completed prescription.")
+        # Update the deleted field to True
+        instance.deleted = True
+        return instance
 
 
 class NurseSerializer(serializers.ModelSerializer):

@@ -12,6 +12,7 @@ export const EditPrescription = ({ prescription, title }) => {
 
   const handlePrescriptionSubmit = async (e) => {
     e.preventDefault();
+    console.log("Prescription submitted:", currentPrescription);
   };
 
   return (
@@ -26,7 +27,8 @@ export const EditPrescription = ({ prescription, title }) => {
               <InputGroup>
                 <InputGroup.Text>Medicines</InputGroup.Text>
                 <MedicineSelect
-                  value={prescription.medicines}
+                  prescription={prescription}
+                  value={prescription.medicine}
                   hanleMedicineSelect={handleOnChange}
                   title="---Choose Medicines---"
                 />

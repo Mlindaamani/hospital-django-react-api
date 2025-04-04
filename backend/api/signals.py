@@ -24,7 +24,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         elif instance.role == RoleChoices.NURSE:
             print("Creating nurse profile...")
             Nurse.objects.create(user=instance)
-            print("Nurse profile created successfully...")
 
         elif instance.role == RoleChoices.PATIENT:
             Patient.objects.create(user=instance)
+

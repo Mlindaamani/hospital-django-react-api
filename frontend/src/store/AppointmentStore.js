@@ -1,10 +1,12 @@
 import create from "zustand";
 import { axiosInstance } from "../config/config";
+import { getBackendErrorMessage } from "../utils/functions";
 
-export const useAppointmentStore = create((set) => ({
+export const useAppointmentStore = create((set, get) => ({
   appointments: [],
   loading: false,
   error: null,
+  completingAppointment: false,
 
   getAppointments: async () => {
     set({ loading: true, error: null });
@@ -57,14 +59,17 @@ export const useAppointmentStore = create((set) => ({
   },
 
   markAppointmentAsCompleted: async (id) => {
-    set({ loading: true, error: null });
+    set({ completingAppointment: true, error: null });
     try {
       await axiosInstance.patch(`/appointments/${id}/`, {
         status: "Completed",
       });
-      set({ loading: false });
+      set({ completingAppointment: false });
     } catch (error) {
-      set({ error: getBackendErrorMessage(error), loading: false });
+      set({
+        error: getBackendErrorMessage(error),
+        completingAppointment: false,
+      });
     }
   },
 }));

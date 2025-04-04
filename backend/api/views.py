@@ -43,16 +43,6 @@ class NurseViewSet(BaseViewSet):
     serializer_class = NurseSerializer
     permission_classes = [IsNurse]
 
-    @action(detail=False, methods=['post'], url_path='profile')
-    def profile(self, request):
-        user = request.user
-        nurse, created = Nurse.objects.get_or_create(user=user)
-        
-        serializer = self.get_serializer(nurse, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"detail": "Nurse profile updated successfully!"}, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
-
 
 class DoctorViewSet(BaseViewSet):
     queryset = Doctor.objects.all()
@@ -62,7 +52,7 @@ class DoctorViewSet(BaseViewSet):
 
 class PrescriptionViewSet(BaseViewSet):
     serializer_class = PrescriptionSerializer
-    permission_classes = [IsAdminOrDoctor]
+    permission_classes = [IsAdminOrDoctorOrLabTech]
 
     def get_queryset(self):
         user = self.request.user

@@ -11,7 +11,9 @@ from .models import (
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'email', 'is_superuser', 'role']
+    list_display = ['id', 'first_name', 'last_name', 'email', 'is_superuser', 'role']
+    list_per_page = 30
+    list_editable = ['role']
 
 
 @admin.register(Nurse)
@@ -41,7 +43,7 @@ class ReceptionistAdmin(admin.ModelAdmin):
 
 @admin.register(LabTechnician)
 class LabTechnicianAdmin(admin.ModelAdmin):
-    list_display = ['user__first_name', 'user__last_name', 'user__email']
+    list_display = ['id', 'user__first_name', 'user__last_name', 'user__email']
     list_filter = ['user__first_name']
 
 
@@ -49,6 +51,7 @@ class LabTechnicianAdmin(admin.ModelAdmin):
 class PharmacistAdmin(admin.ModelAdmin):
     list_display = ['user__first_name', 'user__last_name', 'user__email']
     list_filter = ['user__first_name']
+    list_per_page= 10
 
 
 @admin.register(Appointment)
@@ -71,7 +74,7 @@ class LabResultAdmin(admin.ModelAdmin):
 
 @admin.register(Prescription)
 class PrescriptionAdmin(admin.ModelAdmin):
-    list_display = ['patient', 'doctor',
+    list_display = ['id', 'patient', 'doctor',
                     'prescription_date', 'medicine', 'instructions', 'status']
     list_filter = ['status', 'prescription_date']
     list_editable = ['status']
@@ -85,6 +88,7 @@ class BillAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['user__first_name', 'user__last_name', 'gender', 'address',
+    list_display = ['id', 'user__first_name', 'user__last_name', 'gender', 'address',
                     'user__phone_number', 'user__email',  'file_number']
-    list_per_page = 10
+    list_per_page = 30
+    list_editable = ['gender']

@@ -3,6 +3,7 @@ import { Form } from "react-bootstrap";
 import { axiosInstance } from "../../config/config";
 
 export const MedicineSelect = ({
+  prescription,
   title = "Select Medicines",
   hanleMedicineSelect,
 }) => {
@@ -21,7 +22,12 @@ export const MedicineSelect = ({
   }, []);
 
   return (
-    <Form.Select onChange={hanleMedicineSelect} size="lg" name="medicines">
+    <Form.Select
+      onChange={hanleMedicineSelect}
+      size="lg"
+      name="medicines"
+      defaultValue={prescription.medicine}
+    >
       <option>{title}</option>
       {medicines.map((medicine) => (
         <option value={medicine.id} key={medicine.id}>

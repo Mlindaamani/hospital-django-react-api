@@ -26,11 +26,7 @@
   gap: 32px;
 }
 
-.order {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
+
 
 .med-card {
   cursor: pointer;
@@ -41,4 +37,142 @@
 
 .med-card:hover {
   transform: translateZ(20px) scale(1.1);
+}
+
+.card-hover:hover {
+  border: 2px solid #fff;
+}
+
+
+/* New App css */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+}
+
+.chat-dash {
+  background: linear-gradient(135deg, #063d02da, #000000cb);
+}
+
+.chat-app {
+  background: linear-gradient(135deg, #4f69db, #5e3487);
+}
+.chat-app-color {
+  background: linear-gradient(135deg, #4f69db, #5e3487);
+}
+
+
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 0);
+  }
+  25% {
+    transform: translate(-1px, 0);
+  }
+  50% {
+    transform: translate(1px, 0);
+  }
+  75% {
+    transform: translate(-1px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.feature-icons {
+  display: inline-block;
+  animation: shake 0.5s infinite;
+  transition: transform 0.3s, color 0.3s;
+  color: #4f69db;
+  cursor: grab;
+}
+
+/* custom sidebar */
+.sidebar-c {
+  height: 100vh; 
+  overflow-y: auto; 
+  position: sticky; 
+  top: 0; 
+}
+.profile-section {
+  position: sticky; 
+  bottom: 0; 
+  background: #f8f9fa; 
+  padding: 1rem; /
+}
+
+.content-c {
+  height: 100vh; 
+  overflow-y: auto; 
+}
+
+.brand-icon {
+  width: 40px; 
+  height: auto; 
+}
+
+.brand-divider {
+  border: none; 
+  height: 2px; 
+  background-color: #fff; 
+  margin: 1rem 0; 
+  margin-bottom: 8px;
+}
+
+/* Table */
+.enhanced-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.enhanced-table th {
+  border-bottom: 2px solid #ecf0f1;
+  padding: 15px;
+  text-transform: uppercase;
+  font-size: 0.9em;
+}
+
+.enhanced-table td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.rating-stars {
+  color: #f1c40f;
+  font-size: 1.1em;
+}
+
+
+.hover-opacity {
+  transition: opacity 0.3s ease;
+}
+
+.hover-opacity:hover {
+  opacity: 0.8;
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: translateY(-3px);
+}
+
+.side-bar-links:hover{
+background-color: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+.active {
+  background-color: rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 4px;
+  font-weight: bold;
 }

@@ -1,15 +1,17 @@
 import create from "zustand";
+import { getBackendErrorMessage } from "../utils/functions";
+import { axiosInstance } from "../config/config";
 
 export const useLabResultsStore = create((set) => ({
-  results: [],
+  labresults: [],
   loading: false,
   error: null,
 
-  getResults: async () => {
+  getLabResults: async () => {
     set({ loading: true, error: null });
     try {
-      const results = await axiosInstance.get("/results/");
-      set({ results: results.data, loading: false });
+      const results = await axiosInstance.get("/labresults/");
+      set({ labresults: results.data, loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });
     }
@@ -18,7 +20,7 @@ export const useLabResultsStore = create((set) => ({
   createResult: async (data) => {
     set({ loading: true, error: null });
     try {
-      await axiosInstance.post("/results/", data);
+      await axiosInstance.post("/labresults/", data);
       set({ loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });
@@ -28,7 +30,7 @@ export const useLabResultsStore = create((set) => ({
   updateResult: async (id, data) => {
     set({ loading: true, error: null });
     try {
-      await axiosInstance.put(`/results/${id}/`, data);
+      await axiosInstance.put(`/labresults/${id}/`, data);
       set({ loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });
@@ -38,7 +40,7 @@ export const useLabResultsStore = create((set) => ({
   deleteResult: async (id) => {
     set({ loading: true, error: null });
     try {
-      await axiosInstance.delete(`/results/${id}/`);
+      await axiosInstance.delete(`/labresults/${id}/`);
       set({ loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });

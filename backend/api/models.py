@@ -11,7 +11,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
-    phone_number= models.CharField(max_length=15, blank=True, null=True)
+    phone_number= models.CharField(max_length=15, default="Not provided")
     role = models.CharField(max_length=20, choices=RoleChoices.ROLE_CHOICES, default=RoleChoices.DOCTOR)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -246,7 +246,7 @@ class LabResult(models.Model):
 
     @property
     def patient_name(self):
-        return f"{self.patient.user.first_name} {self.patient.user.last_name}"
+        return f"{self.patient.user.first_name}"
 
     @property
     def patient_file_number(self):
@@ -255,7 +255,11 @@ class LabResult(models.Model):
 
     @property
     def lab_technician_name(self):
-        return f"{self.lab_technician.user.first_name} {self.lab_technician.user.last_name}"
+        return f"{self.lab_technician.user.first_name}"
+    
+    @property
+    def lab_technician_license_number(self):
+        return f"{self.lab_technician.license_number}"
 
     def __str__(self):
-        return f"{self.test_type} for {self.patient.user.first_name} {self.patient.user.last_name}"
+        return f"{self.test_type} for {self.patient.user.first_name}"
