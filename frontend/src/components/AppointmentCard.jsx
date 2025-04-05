@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { ListGroup, Card, Button } from "react-bootstrap";
-import { colorStatus, formatDjangoDateTime } from "../utils/functions";
-import { PrescriptionModal } from "./ModalPrescription";
+import { colorStatus, formatDjangoDateTime, ROLE } from "../utils/functions";
+import { useAuthStore } from "../store/AuthStore";
 import { useAppointmentStore } from "../store/appointmentStore";
 
 export const AppointmentCard = ({ appointment }) => {
-  const [show, setShow] = useState(false);
   const {
     markAppointmentAsCompleted,
     deleteAppointment,
     completingAppointment,
   } = useAppointmentStore();
+
+  const { user } = useAuthStore();
+  const isPatient = user.role === ROLE.PATIENT;
+  const isCompleted = appointment.status === "Completed";
 
   const handleComplete = async () => {
     await markAppointmentAsCompleted(appointment.id);
@@ -20,21 +23,15 @@ export const AppointmentCard = ({ appointment }) => {
     await deleteAppointment(appointment.id);
   };
 
-  const isCompleted = appointment.status === "Completed";
-
   return (
     <Card
-      className="rounded-4 shadow-lg border-0 h-100 card-hover"
-      style={{ transition: "0.3s", backgroundColor: "#f9f9f9" }}
+      className="rounded-4 shadow-lg  h-100 card-hover"
+      style={{
+        transition: "0.3s",
+        backgroundColor: "#f9f9f9",
+        borderBottom: isCompleted ? "8px solid #28a745" : "2px solid #fff",
+      }}
     >
-      <PrescriptionModal
-        patientId={appointment.patient}
-        patientName={appointment.patient_name}
-        fileNumber={appointment.patient_file_number}
-        show={show}
-        onHide={() => setShow(false)}
-      />
-
       <Card.Header
         className="fw-bold fs-5  text-light rounded-top-4"
         style={{ backgroundColor: "#2D4263" }}
@@ -66,35 +63,41 @@ export const AppointmentCard = ({ appointment }) => {
         </ListGroup>
       </Card.Body>
 
-      <Card.Footer className="bg-white border-top-0 d-flex justify-content-between flex-wrap gap-2 p-3 rounded-bottom-4">
-        <Button
-          variant="outline-primary"
-          size="sm"
-          className="rounded-4"
-          onClick={() => setShow(true)}
-          disabled={isCompleted}
-        >
-          Prescription
-        </Button>
+      <Card.Footer className="bg-white border-top-0 d-flex justify-content-between flex-wrap p-3 rounded-bottom-4">
+        <div>
+          {!isPatient && (
+            <>
+              <Button
+                variant="outline-primary"
+                size="sm"
+                className="rounded-4"
+                onClick={() => setShow(true)}
+                disabled={isCompleted}
+              >
+                Prescription
+              </Button>
 
-        <Button
-          variant="outline-success"
-          size="sm"
-          className="rounded-4"
-          onClick={handleComplete}
-          disabled={isCompleted}
-        >
-          {completingAppointment ? "Marking..." : "Complete"}
-        </Button>
+              <Button
+                variant="outline-success"
+                size="sm"
+                className="rounded-4"
+                onClick={handleComplete}
+                disabled={isCompleted}
+              >
+                {completingAppointment ? "Marking..." : "Mark as Completed"}
+              </Button>
+            </>
+          )}
 
-        <Button
-          variant="outline-danger"
-          size="sm"
-          className="rounded-4"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
+          <Button
+            variant="outline-danger"
+            size="sm"
+            className="rounded-4"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </div>
       </Card.Footer>
     </Card>
   );

@@ -102,25 +102,23 @@ class AppointmentViewSet(BaseViewSet):
     serializer_class = AppointmentSerializer
     permission_classes = [IsAdminOrDoctorOrReceptionist]
 
+    def perform_create(self, serializer):
+        request = self.request
+        if hasattr(request.user, 'patient'):
+            # Set the patient to the logged-in patient
+            serializer.validated_data['patient'] = request.user.patient
+        return super().perform_create(serializer)
+
+     
     def get_queryset(self):
         user = self.request.user
-        
+
         if user.role == RoleChoices.DOCTOR:
             return Appointment.objects.filter(doctor__user=user)
-        
-        elif user.role == RoleChoices.RECEPTIONIST:
-            return Appointment.objects.filter(receptionist__user=user)
-        
+                
         elif user.role == RoleChoices.PATIENT:
             return Appointment.objects.filter(patient__user=user)
-        
-        elif user.role == RoleChoices.NURSE:
-            return Appointment.objects.filter(nurse__user=user)
-        
-        elif user.role == RoleChoices.LAB_TECH:
-            return Appointment.objects.filter(lab_technician__user=user)
-        else:
-            return Appointment.objects.all()
+
 
 
 class PharmacistViewSet(BaseViewSet):

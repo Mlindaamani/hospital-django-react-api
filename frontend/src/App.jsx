@@ -15,7 +15,8 @@ import { Patients } from "./pages/doctor/Patients";
 import { DoctorSettings } from "./pages/doctor/Settings";
 import { Profile } from "./pages/doctor/Profile";
 import { DoctorAnalytics } from "./pages/doctor/DoctorAnalytics";
-import { AppointmentForm } from "./pages/patient/Appointment";
+import { AppointmentForm } from "./pages/patient/Appointment"; 
+
 
 export const App = () => {
   return (

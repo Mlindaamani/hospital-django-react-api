@@ -4,15 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useDoctorStore } from "../../store/doctorStore";
 import { useAppointmentStore } from "../../store/appointmentStore";
 import { Toaster } from "react-hot-toast";
-useDoctorStore;
-import {
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Card,
-} from "react-bootstrap";
+import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
 
 export const AppointmentForm = () => {
   const { doctors, getDoctors } = useDoctorStore();
@@ -46,7 +38,9 @@ export const AppointmentForm = () => {
 
   return (
     <Container className="mt-5">
-      <h4 className="text-primary mb-5">Book an Appointment</h4>
+      <h4 className="mb-5" style={{ color: "#2D4200" }}>
+        Book an Appointment
+      </h4>
       <h5 className="mb-3">Choose a Doctor</h5>
       <Row className="mb-4 g-3">
         {doctors.map((doctor) => {
@@ -56,15 +50,16 @@ export const AppointmentForm = () => {
               <Card
                 onClick={() => handleDoctorClick(doctor)}
                 className={`p-4 rounded-4 h-100 cursor-pointer shadow-sm ${
-                  isSelected ? "border-primary shadow-lg" : "border-info"
+                  isSelected ? "shadow-lg" : "shadow-sm"
                 }`}
                 style={{
                   borderWidth: isSelected ? "3px" : "2px",
+                  borderColor: isSelected ? "#2D4200" : "#e0e0e0",
                   cursor: "pointer",
-                  transition: "all 0.2s ease-in-out",
+                  transition: "all 0.3s ease-in-out",
                 }}
               >
-                <h6 className="text-primary">
+                <h6 className="" style={{ color: "#2D4200" }}>
                   Dr. {doctor.first_name} {doctor.last_name}
                 </h6>
                 <p className="text-muted mb-0">{doctor.specialization}</p>
@@ -87,7 +82,7 @@ export const AppointmentForm = () => {
                 timeIntervals={30}
                 dateFormat="yyyy-MM-dd HH:mm"
                 placeholderText="Select date and time"
-                className="form-control bg-light shadow-sm"
+                className="custom-datepicker"
                 required
                 timeCaption="Time"
               />
@@ -107,7 +102,16 @@ export const AppointmentForm = () => {
           />
         </Form.Group>
 
-        <Button type="submit" variant="primary">
+        <Button
+          type="submit"
+          className="rounded-2"
+          style={{
+            backgroundColor: "#2D4200",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+          }}
+        >
           Book Appointment
         </Button>
       </Form>

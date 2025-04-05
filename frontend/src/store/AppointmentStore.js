@@ -60,6 +60,14 @@ export const useAppointmentStore = create((set, get) => ({
   deleteAppointment: async (id) => {
     set({ loading: true, error: null });
     try {
+      // Show a confirmation dialog before deleting
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this appointment?"
+      );
+      if (!confirmed) {
+        set({ loading: false });
+        return;
+      }
       await axiosInstance.delete(`/appointments/${id}/`);
       set({ loading: false });
     } catch (error) {

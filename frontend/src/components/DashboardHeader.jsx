@@ -19,8 +19,11 @@ export const DashboardHeader = () => {
         <small className="mb-0 text-secondary">{location.pathname}</small>
       </div>
       <div className="d-flex align-items-center gap-2">
+        {/* Username */}
+        <span className="text-secondary fw-bold">
+          {user?.first_name} {user?.last_name}
+        </span>
         <Image
-          // src={user?.photo ? user.photo : avatar}
           src={user?.photo ? user.photo : avatar}
           roundedCircle
           fluid

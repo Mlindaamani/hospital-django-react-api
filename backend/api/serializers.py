@@ -39,25 +39,20 @@ class CustomUserSerializer(UserSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'patient', 'doctor', 
-                  'patient_name',
-                   'patient_file_number',
-                    'doctor_name',
-                  'doctor_specialization', 
-                  'appointment_date',
-                    'reason', 'status'
-                  ]
-        read_only_fields = ['patient']
+        fields = [
+            'id', 
+            'patient',
+            'doctor', 
+            'patient_name',
+            'patient_file_number',
+            'doctor_name',
+            'doctor_specialization', 
+            'appointment_date',
+            'reason', 
+            'status'
+        ]
+        read_only_fields = ['id', 'patient', 'patient_name', 'patient_file_number', 'doctor_name', 'doctor_specialization']
         
-    def create(self, validated_data):
-        request = self.context.get('request')
-        print(validated_data)
-        
-        if hasattr(request.user, 'patient'):
-            # Set the patient to the logged-in patient
-            validated_data['patient'] = request.user.patient
-            appointment = Appointment.objects.create(**validated_data)
-            return appointment
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
