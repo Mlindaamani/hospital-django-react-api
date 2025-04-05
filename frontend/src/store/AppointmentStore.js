@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 export const useAppointmentStore = create((set, get) => ({
   appointments: [],
+  appointment: null,
   loading: false,
   error: null,
   completingAppointment: false,
@@ -40,8 +41,8 @@ export const useAppointmentStore = create((set, get) => ({
   getAppointment: async (id) => {
     set({ loading: true, error: null });
     try {
-      const appointment = await axiosInstance.get(`/appointments/${id}/`);
-      set({ appointment: appointment.data, loading: false });
+      const response = await axiosInstance.get(`/appointments/${id}/`);
+      set({ appointment: response.data, loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });
     }

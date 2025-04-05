@@ -48,7 +48,6 @@ export const PatientSidebar = () => (
       />
       <SidebarLink to="/patient/new" icon={profile} text="New Appointment" />
       <SidebarLink to="/patient/profile" icon={settings} text="My Profile" />
-      <SidebarLink to="/patient/settings" icon={settings} text="Settings" />
     </div>
   </div>
 );

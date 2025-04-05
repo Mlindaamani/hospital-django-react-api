@@ -33,7 +33,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
-        fields= ['id', 'first_name', 'last_name', 'email', 'role']
+        fields= ['id', 'first_name', 'last_name', 'email', 'role', "patient_profile_url"]
 
 
 class AppointmentSerializer(serializers.ModelSerializer):

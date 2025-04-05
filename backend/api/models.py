@@ -31,6 +31,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
     
+    def patient_profile_url(self):
+        try:
+            return self.patient.profile_picture.url
+        except AttributeError:
+            return None
+    def doctor_profile_url(self):
+        try:
+            return self.doctor.profile_picture.url
+        except AttributeError:
+            return None
+    
 
 class BaseProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -147,8 +158,9 @@ class Patient(models.Model):
     @property
     def last_name(self):
         return self.user.last_name
+    
 
-        
+            
 class Appointment(models.Model):
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, related_name='appointments')

@@ -15,8 +15,9 @@ import { Patients } from "./pages/doctor/Patients";
 import { DoctorSettings } from "./pages/doctor/Settings";
 import { Profile } from "./pages/doctor/Profile";
 import { DoctorAnalytics } from "./pages/doctor/DoctorAnalytics";
-import { AppointmentForm } from "./pages/patient/Appointment"; 
-
+import { AppointmentForm } from "./pages/patient/Appointment";
+import { AppointmentDetail } from "./pages/patient/AppointmentDetail";
+import { PatientProfile } from "./pages/patient/Profile";
 
 export const App = () => {
   return (
@@ -52,9 +53,9 @@ export const App = () => {
         <Route path="/patient" element={<PatientLayout />}>
           <Route index element={<Analytics />} />
           <Route path="appointments" element={<Appointments />} />
+          <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="new" element={<AppointmentForm />} />
-          <Route path="profile" element={<h4>Profile</h4>} />
-          <Route path="settings" element={<h4>Settings</h4>} />
+          <Route path="profile" element={<PatientProfile />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />

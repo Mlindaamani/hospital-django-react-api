@@ -9,9 +9,10 @@ import { removeTokens, storeTokens, getAccessToken } from "../utils/functions";
 export const useAuthStore = create(
   persist(
     (set) => ({
+      isAuthenticated: !!getAccessToken(),
       user: null,
       loading: false,
-      isAuthenticated: !!getAccessToken(),
+      profile: null,
 
       register: async (first_name, last_name, email, password, navigate) => {
         if (!first_name || !last_name || !email || !password)
@@ -83,6 +84,21 @@ export const useAuthStore = create(
             duration: 2000,
             position: "top-center",
             id: "login",
+          });
+        }
+      },
+
+      userProfile: async () => {
+        set({ loading: true });
+        try {
+          const { data } = await axiosInstance.get("/auth/users/me/");
+          set({ profile: data, loading: false });
+        } catch (error) {
+          set({ loading: false });
+          toast.error(getBackendErrorMessage(error), {
+            duration: 2000,
+            position: "top-center",
+            id: "profile",
           });
         }
       },
