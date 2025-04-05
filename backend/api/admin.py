@@ -1,5 +1,6 @@
 
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import (
     Patient, Doctor, Receptionist,
@@ -9,18 +10,34 @@ from .models import (
 
 )
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'first_name', 'last_name', 'email', 'is_superuser', 'role']
-    list_per_page = 30
-    list_editable = ['role']
-    actions = ["send_email"]
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-    def send_email(self, request, queryset):
-        for obj in queryset:
-            obj.send_monthly_report()
-            self.message_user(request, f"Monthly report sent to {obj.email}")
-    
+@admin.register(User)
+class CustomUserAdmin(BaseUserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = User
+
+    list_display = ['email', 'first_name', 'last_name', 'is_superuser', 'role']
+    list_filter = ['is_staff', 'is_superuser', 'role']
+    ordering = ['email']
+    search_fields = ['email', 'first_name', 'last_name']
+    filter_horizontal = ()
+
+    fieldsets = (
+        ('Authentication Infomation', {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'role')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'first_name', 'last_name', 'role', 'password1', 'password2'),
+        }),
+    )
+
+
 
 @admin.register(Nurse)
 class NurseAdmin(admin.ModelAdmin):

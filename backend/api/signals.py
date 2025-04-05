@@ -12,7 +12,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             Doctor.objects.create(user=instance)
 
         elif instance.role == RoleChoices.RECEPTIONIST:
-            print('Creating receptionist profile')
             Receptionist.objects.create(user=instance)
             
         elif instance.role == RoleChoices.LAB_TECH:
@@ -22,7 +21,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             Pharmacist.objects.create(user=instance)
 
         elif instance.role == RoleChoices.NURSE:
-            print("Creating nurse profile...")
             Nurse.objects.create(user=instance)
 
         elif instance.role == RoleChoices.PATIENT:

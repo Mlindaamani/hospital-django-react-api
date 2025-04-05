@@ -19,9 +19,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'password', 'role']
+        read_only_fields = ['id']
+ 
 
     def create(self, validated_data):
         password = validated_data.pop("password", None)
@@ -36,14 +39,30 @@ class CustomUserSerializer(UserSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'patient', 'doctor', 'patient_name', 'patient_file_number', 'doctor_name',
-                  'doctor_specialization', 'appointment_date', 'reason', 'status'
+        fields = ['id', 'patient', 'doctor', 
+                  'patient_name',
+                   'patient_file_number',
+                    'doctor_name',
+                  'doctor_specialization', 
+                  'appointment_date',
+                    'reason', 'status'
                   ]
+        read_only_fields = ['patient']
+        
+    def create(self, validated_data):
+        request = self.context.get('request')
+        print(validated_data)
+        
+        if hasattr(request.user, 'patient'):
+            # Set the patient to the logged-in patient
+            validated_data['patient'] = request.user.patient
+            appointment = Appointment.objects.create(**validated_data)
+            return appointment
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'specialization', 'year_of_experience', 'bio', 'license_number']
+        fields = ['id', 'specialization', 'first_name', 'last_name', 'year_of_experience', 'bio', 'license_number']
 
 
 class ReceptionistSerializer(serializers.ModelSerializer):

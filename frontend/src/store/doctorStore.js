@@ -10,7 +10,7 @@ export const useDoctorStore = create((set) => ({
   getDoctors: async () => {
     set({ loading: true, error: null });
     try {
-      constdoctors = await axiosInstance.get("/doctors/");
+      const doctors = await axiosInstance.get("/doctors/");
       set({ doctors: doctors.data, loading: false });
     } catch (error) {
       set({ error: getBackendErrorMessage(error), loading: false });

@@ -59,7 +59,7 @@ class IsAdminOrPharmacist(BasePermission):
 
 class IsAdminOrDoctorOrReceptionist(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'receptionist']
+        return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'receptionist', 'patient', 'lab_tech', 'nurse']
 
 
 class IsAdminOrDoctorOrLabTech(BasePermission):
@@ -77,6 +77,6 @@ class IsAdminOrReceptionistOrLabTech(BasePermission):
         return request.user.is_authenticated and request.user.role in ['receptionist', 'admin', 'lab_tech']
 
 
-class IsAdminOrReceptionistOrPharmacist(BasePermission):
+class IsAdminOrReceptionistOrPharmacistOrPatientOrNurse(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['receptionist', 'admin', 'pharmacist']
+        return request.user.is_authenticated and request.user.role in ['receptionist', 'admin', 'pharmacist', 'patient', 'doctor', 'lab_tech', 'nurse']

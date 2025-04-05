@@ -1,6 +1,7 @@
 import create from "zustand";
 import { axiosInstance } from "../config/config";
 import { getBackendErrorMessage } from "../utils/functions";
+import toast from "react-hot-toast";
 
 export const useAppointmentStore = create((set, get) => ({
   appointments: [],
@@ -19,11 +20,19 @@ export const useAppointmentStore = create((set, get) => ({
   },
 
   createAppointment: async (data) => {
+    if (!data.doctor) {
+      toast.error("Please select a doctor.");
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
       await axiosInstance.post("/appointments/", data);
       set({ loading: false });
+      toast.success("Appointment booked successfully!");
     } catch (error) {
+      console.log(error);
+      toast.error(getBackendErrorMessage(error));
       set({ error: getBackendErrorMessage(error), loading: false });
     }
   },

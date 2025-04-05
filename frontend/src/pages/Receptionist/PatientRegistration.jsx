@@ -8,11 +8,6 @@ const initialValues = {
 };
 
 export const PatientRegistration = () => {
-  const onSubmit = (value, action) => {
-    new Promise((resolve) => setTimeout(resolve, 2000));
-    action.resetForm();
-  };
-
   const {
     values,
     handleBlur,

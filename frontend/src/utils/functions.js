@@ -10,6 +10,7 @@ export const ROLE = {
   NURSE: "nurse",
   LAB_TECH: "lab_tech",
   PHARMACIST: "pharmacist",
+  PATIENT: "patient",
 };
 
 export const navigateTo = (user) => {
@@ -26,6 +27,9 @@ export const navigateTo = (user) => {
       return "/lab_tech/";
     case ROLE.PHARMACIST:
       return "/pharmacist";
+
+    case ROLE.PATIENT:
+      return "/patient";
     default:
       return "/";
   }
@@ -35,6 +39,10 @@ export const redirectTo = (navigate, role) => {
   switch (role) {
     case ROLE.DOCTOR:
       navigate("/doctor/");
+      break;
+
+    case ROLE.PATIENT:
+      navigate("/patient/");
       break;
 
     case ROLE.ADMIN:
@@ -55,6 +63,10 @@ export const redirectTo = (navigate, role) => {
 
     case ROLE.PHARMACIST:
       navigate("/pharmacist/", { replace: true });
+      break;
+
+    case ROLE.PATIENT:
+      navigate("/patient/", { replace: true });
       break;
 
     default:
@@ -171,7 +183,10 @@ export const formatDjangoDateTime = (djangoDateTime) => {
   return formattedDate.replace(",", "");
 };
 
-export const getBackendErrorMessage = (error) => error.response?.data?.message;
+export const getBackendErrorMessage = (error) =>
+  error.response?.data?.detail ||
+  error.response.data.message ||
+  "An error occurred";
 
 export const roleBadgeColor = (role) => {
   switch (role) {

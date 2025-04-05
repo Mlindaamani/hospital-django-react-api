@@ -22,18 +22,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
     
     def __str__(self):
-        return f"{self.first_name or ''} --> {self.role or ''}".strip()
+        return f"{self.first_name}({self.role})".strip()
     
     @property
     def full_name(self):
-        return f"{self.first_name or ''} {self.last_name or ''}".strip()
+        return f"{self.first_name} {self.last_name}".strip()
 
     def get_short_name(self):
-        return self.first_name or ""
-    
-    def send_monthly_report(self):
-        # Logic to send monthly report
-        print(f"Monthly report sent to {self.email}")
+        return self.first_name
     
 
 class BaseProfile(models.Model):
@@ -87,6 +83,14 @@ class Doctor(BaseProfile):
     def full_name(self):
         return f"{self.user.first_name}-{self.user.last_name}"
     
+    @property
+    def first_name(self):
+        return f"{self.user.first_name}"
+    
+    @property
+    def last_name(self):
+        return f"{self.user.last_name}"
+    
     
 class Receptionist(BaseProfile):
     specialization = models.CharField(max_length=100, default='General')
@@ -114,7 +118,7 @@ class Pharmacist(BaseProfile):
 
 class Patient(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient_profile')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient')
     gender = models.CharField(
         max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
     file_number = models.CharField(max_length=255, default='Not file number yet')

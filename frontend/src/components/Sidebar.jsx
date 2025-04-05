@@ -15,8 +15,9 @@ export const DoctorSidebar = () => (
         text="Appointments"
       />
       <SidebarLink to="/doctor/labresults" icon={person} text="LabResults" />
-      <SidebarLink to="/doctor/settings" icon={settings} text="Settings" />
+      <SidebarLink to="/doctor/patients" icon={profile} text="Patients" />
       <SidebarLink to="/doctor/profile" icon={profile} text="Profile" />
+      <SidebarLink to="/doctor/settings" icon={settings} text="Settings" />
     </div>
   </div>
 );
@@ -27,7 +28,27 @@ export const ReceptionistSidebar = () => (
       <Brand />
       <SidebarLink to="/receptionist/doctors" icon={balance} text="Doctors" />
       <SidebarLink to="/receptionist/profile" icon={profile} text="Profile" />
-      <SidebarLink to="/receptionist/settings" icon={settings} text="Settings" />
+      <SidebarLink
+        to="/receptionist/settings"
+        icon={settings}
+        text="Settings"
+      />
+    </div>
+  </div>
+);
+
+export const PatientSidebar = () => (
+  <div className="p-3">
+    <div className="d-flex flex-column gap-2">
+      <Brand />
+      <SidebarLink
+        to="/patient/appointments"
+        icon={balance}
+        text="My Appointments"
+      />
+      <SidebarLink to="/patient/new" icon={profile} text="New Appointment" />
+      <SidebarLink to="/patient/profile" icon={settings} text="My Profile" />
+      <SidebarLink to="/patient/settings" icon={settings} text="Settings" />
     </div>
   </div>
 );
