@@ -1,10 +1,11 @@
 from django.db import models
-from django.core.validators import MinValueValidator
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from .choices import (RoleChoices, BillChoice, PatientGenderChoices, AppointmentChoice, 
 LabResultsChoice, PrescriptionChoice)
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import HmsAccountManager
+from .choices import SpecializationChoice
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -31,62 +32,53 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
     
+    @property
     def patient_profile_url(self):
         try:
             return self.patient.profile_picture.url
         except AttributeError:
             return None
+        
+    @property
     def doctor_profile_url(self):
         try:
             return self.doctor.profile_picture.url
         except AttributeError:
             return None
-    
 
-class BaseProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    year_of_experience = models.IntegerField(validators=[MinValueValidator(0)], default=0)
+
+class CommonProfileBase(models.Model):
     bio = models.TextField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='profile_pictures/', default='profile_pictures/default.jpg')
+    year_of_experience = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def delete(self):
         self.profile_picture.delete()
         super().delete()
 
+# modulify.ai
+
+
+class DoctorProfileBase(CommonProfileBase):
+    specialization = models.CharField(max_length=100, choices=SpecializationChoice.SPECIALIZATION_CHOICES, default=SpecializationChoice.GENERAL_MEDICINE)
+    license_number = models.CharField(max_length=255, unique=True, default='Not provided')
 
     class Meta:
         abstract = True
+
+
     
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+class Doctor(DoctorProfileBase):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doctor')
+    profile_picture = models.ImageField(upload_to='profiles/', default='doctor/default.jpg')
     
-    
-class Nurse(BaseProfile):
-    license_number = models.CharField(max_length=255, blank=True, null=True)
-
-
-    def __str__(self):
-       return f"{self.user.first_name}-{self.user.last_name}: {self.license_number}"
-
-
-    @property
-    def full_name(self):
-        return f"{self.user.first_name}-{self.user.last_name}"
-
-    @property
-    def email(self):
-        return f"{self.user.email}"
-
-    def __str__(self):
-        return f"{self.user.first_name}-{self.user.last_name}: {self.license_number}"
-    
-
-class Doctor(BaseProfile):
-    specialization = models.CharField(max_length=100)
-    license_number = models.CharField(max_length=255, blank=True, null=True)
-
     def __str__(self):
         return f"Dr. {self.user.first_name}"
     
@@ -103,54 +95,42 @@ class Doctor(BaseProfile):
         return f"{self.user.last_name}"
     
     
-class Receptionist(BaseProfile):
-    specialization = models.CharField(max_length=100, default='General')
-
+class Receptionist(CommonProfileBase):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receptionist')
+    profile_picture = models.ImageField(upload_to='profiles/', default='receptionist/default.jpg')
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class LabTechnician(BaseProfile):
-    specialization = models.CharField(max_length=100,default='General')
-    license_number = models.CharField(max_length=255, unique=True)
+class LabTechnician(CommonProfileBase):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_technician')
+    profile_picture = models.ImageField(upload_to='profiles/', default='lab_tech/default.jpg')
+    license_number = models.CharField(max_length=255, unique=True, default='Not provided')
+   
     
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
-
-class Pharmacist(BaseProfile):
-    specialization = models.CharField(max_length=100, default='General')
-    license_number = models.CharField(max_length=255, blank=True, null=True)
-    
-    def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-    
 
 class Patient(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='patient')
     gender = models.CharField(
-        max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.GENDER_CHOICES_MALE)
+        max_length=1, choices=PatientGenderChoices.GENDER_CHOICES, default=PatientGenderChoices.MALE)
     file_number = models.CharField(max_length=255, default='Not file number yet')
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.TextField(default="Not yet provided")
     has_insurance = models.BooleanField(default=False)
     insurance_number = models.CharField(max_length=255, blank=True, null=True)
     is_discharged = models.BooleanField(default=False)
-    profile_picture = models.ImageField(upload_to='patient_pictures/', default='patient_pictures/default.jpg')
+    profile_picture = models.ImageField(upload_to='profiles/', default='patient/default.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
     
-
-    def save(self, *args, **kwargs):
-        if not self.has_insurance:
-            self.insurance_number = None
-        super().save(*args, **kwargs)
-        
     @property
     def first_name(self):
         return self.user.first_name
@@ -159,8 +139,6 @@ class Patient(models.Model):
     def last_name(self):
         return self.user.last_name
     
-
-            
 class Appointment(models.Model):
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, related_name='appointments')
@@ -169,10 +147,10 @@ class Appointment(models.Model):
     appointment_date = models.DateTimeField()
     status = models.CharField(
         max_length=20, choices=AppointmentChoice.STATUS_CHOICES, default=AppointmentChoice.STATUS_SCHEDULED)
-    reason = models.TextField()
+    reason = models.TextField(max_length=500)
+    is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
 
     @property
     def patient_file_number(self):
@@ -196,21 +174,24 @@ class Appointment(models.Model):
 
 class Medicine(models.Model):
     name = models.CharField(max_length=255)
-    unit = models.IntegerField()
+    stock = models.IntegerField()
     dosage = models.TextField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
 
 class Prescription(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor,  on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='prescriptions')
+    doctor = models.ForeignKey(Doctor,  on_delete=models.CASCADE, related_name='prescriptions')
     prescription_date = models.DateTimeField(auto_now_add=True)
-    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
-    instructions = models.TextField(default='3x3')
+    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE, related_name='prescriptions')
+    instructions = models.TextField(default='Take 1 tablet 3 times daily')
     status = models.CharField(
         max_length=20, choices=PrescriptionChoice.STATUS_CHOICES, default=PrescriptionChoice.STATUS_PENDING)
+    is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -235,11 +216,14 @@ class Prescription(models.Model):
     
 
 class Bill(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='bills')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='bills')
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE, related_name='bills', null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     date_issued = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20, choices=BillChoice.STATUS_CHOICES, default=BillChoice.STATUS_UNPAID)
+    
 
     @property
     def patient_name(self):
@@ -255,14 +239,19 @@ class Bill(models.Model):
 
 
 class LabResult(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='lab_results')
     lab_technician = models.ForeignKey(
-        LabTechnician, on_delete=models.SET_NULL, null=True)
+        LabTechnician, on_delete=models.CASCADE, related_name='lab_results')
     test_type = models.CharField(max_length=100)
     result = models.TextField()
     date_conducted = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=20, choices=LabResultsChoice.STATUS_CHOICES, default=LabResultsChoice.STATUS_PENDING)
+    
+    class Meta:
+        ordering = ['-date_conducted']
+        verbose_name = "LabResult"
+        verbose_name_plural = "LabResults"
 
     @property
     def patient_name(self):

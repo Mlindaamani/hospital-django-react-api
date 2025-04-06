@@ -5,6 +5,7 @@ import { useDoctorStore } from "../../store/doctorStore";
 import { useAppointmentStore } from "../../store/appointmentStore";
 import { Toaster } from "react-hot-toast";
 import { Container, Form, Button, Row, Col, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 export const AppointmentForm = () => {
   const { doctors, getDoctors } = useDoctorStore();
@@ -13,6 +14,15 @@ export const AppointmentForm = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [appointmentDate, setAppointmentDate] = useState(null);
   const [reason, setReason] = useState("");
+  const navigate = useNavigate();
+
+  // Create Date objects for minTime and maxTime
+  const today = new Date();
+  const minTime = new Date(today);
+  minTime.setHours(8, 0, 0, 0);
+
+  const maxTime = new Date(today);
+  maxTime.setHours(19, 0, 0, 0);
 
   useEffect(() => {
     getDoctors();
@@ -21,11 +31,14 @@ export const AppointmentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    createAppointment({
-      doctor: selectedDoctor?.id,
-      appointment_date: appointmentDate,
-      reason: reason,
-    });
+    createAppointment(
+      {
+        doctor: selectedDoctor?.id,
+        appointment_date: appointmentDate,
+        reason: reason,
+      },
+      navigate
+    );
 
     setSelectedDoctor(null);
     setAppointmentDate(null);
@@ -38,10 +51,15 @@ export const AppointmentForm = () => {
 
   return (
     <Container className="mt-5">
-      <h4 className="mb-5" style={{ color: "#2D4200" }}>
+      <h4
+        className="mb-5 text-center"
+        style={{ color: "#2D4200", fontWeight: "bold" }}
+      >
         Book an Appointment
       </h4>
-      <h5 className="mb-3">Choose a Doctor</h5>
+      <h5 className="mb-3" style={{ color: "#2D4200", fontWeight: "bold" }}>
+        Choose a Doctor
+      </h5>
       <Row className="mb-4 g-3">
         {doctors.map((doctor) => {
           const isSelected = selectedDoctor?.id === doctor.id;
@@ -73,7 +91,9 @@ export const AppointmentForm = () => {
         <Row className="mb-3">
           <Col md={6}>
             <Form.Group controlId="appointmentDate" className="mb-4 mt-3">
-              <Form.Label>Appointment Date & Time</Form.Label>
+              <Form.Label style={{ color: "#2D4200", fontWeight: "bold" }}>
+                Appointment Date & Time
+              </Form.Label>
               <DatePicker
                 selected={appointmentDate}
                 onChange={(date) => setAppointmentDate(date)}
@@ -83,6 +103,9 @@ export const AppointmentForm = () => {
                 dateFormat="yyyy-MM-dd HH:mm"
                 placeholderText="Select date and time"
                 className="custom-datepicker"
+                minDate={today}
+                minTime={minTime}
+                maxTime={maxTime}
                 required
                 timeCaption="Time"
               />
@@ -91,7 +114,9 @@ export const AppointmentForm = () => {
         </Row>
 
         <Form.Group controlId="reason" className="mb-4">
-          <Form.Label>Reason</Form.Label>
+          <Form.Label style={{ color: "#2D4200", fontWeight: "bold" }}>
+            Reason
+          </Form.Label>
           <Form.Control
             as="textarea"
             rows={4}

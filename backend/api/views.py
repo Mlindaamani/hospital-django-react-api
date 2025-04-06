@@ -1,22 +1,19 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import status
 from rest_framework.decorators import action
-
-
-
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from .permissions import (
-     IsReceptionist, IsPharmacist, IsAdminOrDoctorOrLabTech, IsNurse,
-    IsAdmin, IsAdminOrDoctorOrReceptionist, IsAdminOrReceptionistOrPharmacistOrPatientOrNurse)
+     IsReceptionist, IsAdminOrDoctorOrLabTech,
+    IsAdmin, IsAdminOrDoctorOrReceptionist)
 
 from .serializers import (
     DoctorSerializer, ReceptionistSerializer, PatientSerializer,
-    LabResultSerializer, PharmacistSerializer, LabTechnicianSerializer,
+    LabResultSerializer, LabTechnicianSerializer,
     AppointmentSerializer, BillSerializer, PrescriptionSerializer,
-    CustomTokenObtainPairSerializer, MedicineSerializer, NurseSerializer)
+    CustomTokenObtainPairSerializer, MedicineSerializer)
 
-from .models import (Doctor, Receptionist, Patient, LabResult, Pharmacist, LabTechnician, Appointment, Bill, Prescription, Medicine, Nurse)
+from .models import (Doctor, Receptionist, Patient, LabResult, LabTechnician, Appointment, Bill, Prescription, Medicine)
 from .choices import RoleChoices
 
 
@@ -27,33 +24,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class BaseViewSet(ModelViewSet):
     pass
-    
-    # def perform_create(self, serializer):
-    #     print(serializer.validated_data)
-    #     # Get the request object
-    #     request = self.request
-    #     # Check if the user is a doctor, lab technician, patient, or receptionist
-    #     if hasattr(request.user, 'doctor'):
-    #         # Set the doctor to the logged-in doctor
-    #         serializer.validated_data['doctor'] = request.user.doctor
-
-    #     # Check if the user is a lab technician, patient, or receptionist
-    #     elif hasattr(request.user, 'labtechnician'):
-    #         # Set the lab technician to the logged-in lab technician
-    #         serializer.validated_data['lab_technician'] = request.user.labtechnician
-
-    #     # Check if the user is a patient or receptionist
-    #     elif hasattr(request.user, 'patient'):
-    #         # Set the patient to the logged-in patient
-    #         serializer.validated_data['patient'] = request.user.patient
-
-
-    #     elif hasattr(request.user, 'receptionist'):
-    #         # Set the receptionist to the logged-in receptionist
-    #         serializer.validated_data['receptionist'] = request.user.receptionist
-    #     # Save the serializer
-    #     serializer.save()
-
 
 
 class MedicineViewSet(BaseViewSet):
@@ -61,16 +31,11 @@ class MedicineViewSet(BaseViewSet):
     serializer_class = MedicineSerializer
 
 
-class NurseViewSet(BaseViewSet):
-    queryset = Nurse.objects.all()
-    serializer_class = NurseSerializer
-    permission_classes = [IsNurse]
-
 
 class DoctorViewSet(BaseViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
-    permission_classes = [IsAdminOrReceptionistOrPharmacistOrPatientOrNurse]
+    permission_classes = []
 
 
 class PrescriptionViewSet(BaseViewSet):
@@ -94,7 +59,7 @@ class LabTechnicianViewSet(BaseViewSet):
 class BillViewSet(BaseViewSet):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdmin, IsReceptionist]
     
 
 
@@ -103,28 +68,35 @@ class AppointmentViewSet(BaseViewSet):
     permission_classes = [IsAdminOrDoctorOrReceptionist]
 
     def perform_create(self, serializer):
-        request = self.request
-        if hasattr(request.user, 'patient'):
-            # Set the patient to the logged-in patient
-            serializer.validated_data['patient'] = request.user.patient
-        return super().perform_create(serializer)
+        user = self.request.user
+
+        if not hasattr(user, 'patient'):
+            raise PermissionDenied("You do not have permission to create an appointment.")
+        serializer.save(patient=user.patient)
 
      
     def get_queryset(self):
         user = self.request.user
 
-        if user.role == RoleChoices.DOCTOR:
-            return Appointment.objects.filter(doctor__user=user)
-                
-        elif user.role == RoleChoices.PATIENT:
-            return Appointment.objects.filter(patient__user=user)
+        if hasattr(user, 'doctor'):
+            return Appointment.objects.filter(doctor=user.doctor)
+        elif hasattr(user, 'patient'):
+            return Appointment.objects.filter(patient=user.patient)
+        elif user.role in [RoleChoices.RECEPTIONIST, RoleChoices.ADMIN]:
+            return Appointment.objects.all()
+        else:
+            return Appointment.objects.none()
+        
+        
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def cancel(self, request, pk=None):
+        appointment = self.get_object()
+        if request.user != appointment.patient.user:
+            raise PermissionDenied("You can only cancel your own appointments.")
+        appointment.status = AppointmentChoice.STATUS_CANCELLED
+        appointment.save()
+        return Response({"detail": "Appointment cancelled."})
 
-
-
-class PharmacistViewSet(BaseViewSet):
-    queryset = Pharmacist.objects.all()
-    serializer_class = PharmacistSerializer
-    permission_classes = [IsPharmacist]
 
 
 class LabResultViewSet(BaseViewSet):
@@ -138,20 +110,6 @@ class ReceptionistViewSet(BaseViewSet):
     serializer_class = ReceptionistSerializer
     permission_classes = [IsReceptionist]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer=serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)  
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)  
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        
        
 class PatientViewSet(BaseViewSet):
     queryset = Patient.objects.all()

@@ -19,14 +19,14 @@ class RoleChoices:
 
 
 class PatientGenderChoices:
-    GENDER_CHOICES_FEMALE = 'F'
-    GENDER_CHOICES_MALE = 'M'
-    GENDER_CHOICES_OTHERS = 'O'
+    FEMALE = 'F'
+    MALE = 'M'
+    OTHERS = 'O'
 
     GENDER_CHOICES = [
-        (GENDER_CHOICES_FEMALE, 'Female'),
-        (GENDER_CHOICES_MALE, 'Male'),
-        (GENDER_CHOICES_OTHERS, 'Other')
+        (FEMALE, 'Female'),
+        (MALE, 'Male'),
+        (OTHERS, 'Other')
     ]
 
 class AppointmentChoice:
@@ -61,3 +61,26 @@ class BillChoice:
     STATUS_UNPAID = 'Unpaid'
     STATUS_PAID = 'Paid'
     STATUS_CHOICES = [(STATUS_UNPAID, 'Unpaid'), (STATUS_PAID, 'Paid')]
+
+
+class  SpecializationChoice:
+    CARDIOLOGY = 'Cardiology'
+    DERMATOLOGY = 'Dermatology'
+    PEDIATRICS = 'Pediatrics'
+    ORTHOPEDICS = 'Orthopedics'
+    GYNECOLOGY = 'Gynecology'
+    NEUROLOGY = 'Neurology'
+    PSYCHIATRY = 'Psychiatry'
+    RADIOLOGY = 'Radiology'
+    GENERAL_MEDICINE = 'General Medicine'
+    SPECIALIZATION_CHOICES = [
+        (CARDIOLOGY, 'Cardiology'),
+        (DERMATOLOGY, 'Dermatology'),
+        (PEDIATRICS, 'Pediatrics'),
+        (ORTHOPEDICS, 'Orthopedics'),
+        (GYNECOLOGY, 'Gynecology'),
+        (NEUROLOGY, 'Neurology'),
+        (PSYCHIATRY, 'Psychiatry'),
+        (RADIOLOGY, 'Radiology'),
+        (GENERAL_MEDICINE, 'General Medicine')
+    ]

@@ -1,9 +1,10 @@
+from django.utils import timezone
 from rest_framework import serializers
+from .models import User
 from djoser.serializers import UserCreateSerializer,  UserSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User
-from .models import (Doctor, Receptionist, Patient, LabTechnician, Pharmacist, Appointment,
-    Prescription, Bill, LabResult, Medicine, Nurse)
+from .models import (Doctor, Receptionist, Patient, LabTechnician ,Appointment,
+    Prescription, Bill, LabResult, Medicine)
 from .choices import   PrescriptionChoice
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -52,6 +53,12 @@ class AppointmentSerializer(serializers.ModelSerializer):
             'status'
         ]
         read_only_fields = ['id', 'patient', 'patient_name', 'patient_file_number', 'doctor_name', 'doctor_specialization']
+
+
+    def validate(self, data):
+        if data['appointment_date'] < timezone.now():
+            raise serializers.ValidationError("Appointment date cannot be in the past")
+        return data
         
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -88,11 +95,6 @@ class LabTechnicianSerializer(serializers.ModelSerializer):
         model = LabTechnician
         fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
-
-class PharmacistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pharmacist
-        fields = ['id', 'specialization', 'year_of_experience', 'bio']
 
 
 class LabResultSerializer(serializers.ModelSerializer):
@@ -141,18 +143,5 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         # Update the deleted field to True
         instance.deleted = True
         return instance
-
-
-class NurseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Nurse
-        fields = ['id', 'specialization', 'year_of_experience', 'bio']
-
-    def validate_year_of_experience(self, value):
-        if value < 0:
-           raise serializers.ValidationError(
-            "Year of experience cannot be negative."
-        )
-        return value
 
 

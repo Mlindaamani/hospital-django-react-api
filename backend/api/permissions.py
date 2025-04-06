@@ -1,9 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-class IsNurse(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['nurse', 'receptionist']
-
 
 class IsDoctorOrReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -32,11 +28,6 @@ class IsLabTech(BasePermission):
         return request.user.is_authenticated and request.user.role == 'lab_tech'
 
 
-class IsPharmacist(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role.role == 'pharmacist'
-
-
 class IsAdminOrDoctor(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role in ['doctor', 'admin']
@@ -52,14 +43,14 @@ class IsAdminOrLabTech(BasePermission):
         return request.user.is_authenticated and request.user.role in ['lab_tech', 'admin']
 
 
-class IsAdminOrPharmacist(BasePermission):
+class IsAdmin(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['pharmacist', 'admin']
+        return request.user.is_authenticated and request.user.role in ['admin']
 
 
 class IsAdminOrDoctorOrReceptionist(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'receptionist', 'patient', 'lab_tech', 'nurse']
+        return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'receptionist', 'patient', 'lab_tech']
 
 
 class IsAdminOrDoctorOrLabTech(BasePermission):
@@ -67,9 +58,9 @@ class IsAdminOrDoctorOrLabTech(BasePermission):
         return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'lab_tech']
 
 
-class IsAdminOrDoctorOrPharmacist(BasePermission):
+class IsAdminOrDoctor(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['doctor', 'admin', 'pharmacist']
+        return request.user.is_authenticated and request.user.role in ['doctor', 'admin']
 
 
 class IsAdminOrReceptionistOrLabTech(BasePermission):
@@ -77,6 +68,6 @@ class IsAdminOrReceptionistOrLabTech(BasePermission):
         return request.user.is_authenticated and request.user.role in ['receptionist', 'admin', 'lab_tech']
 
 
-class IsAdminOrReceptionistOrPharmacistOrPatientOrNurse(BasePermission):
+class IsAdminOrReceptionistOrOrPatient(BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ['receptionist', 'admin', 'pharmacist', 'patient', 'doctor', 'lab_tech', 'nurse']
+        return request.user.is_authenticated and request.user.role in ['receptionist', 'admin',  'patient', 'doctor', 'lab_tech']

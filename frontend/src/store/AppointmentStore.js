@@ -20,7 +20,7 @@ export const useAppointmentStore = create((set, get) => ({
     }
   },
 
-  createAppointment: async (data) => {
+  createAppointment: async (data, navigate) => {
     if (!data.doctor) {
       toast.error("Please select a doctor.");
       return;
@@ -31,6 +31,7 @@ export const useAppointmentStore = create((set, get) => ({
       await axiosInstance.post("/appointments/", data);
       set({ loading: false });
       toast.success("Appointment booked successfully!");
+      navigate("/patient/appointments");
     } catch (error) {
       console.log(error);
       toast.error(getBackendErrorMessage(error));

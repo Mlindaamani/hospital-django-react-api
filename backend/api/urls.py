@@ -11,10 +11,8 @@ from .views import (
     LabTechnicianViewSet,
     BillViewSet,
     AppointmentViewSet,
-    PharmacistViewSet,
     LabResultViewSet,
     MedicineViewSet,
-    NurseViewSet
 )
 
 
@@ -26,13 +24,11 @@ router.register('patients', PatientViewSet, basename='patients')
 router.register('labtechnicians', LabTechnicianViewSet,
                 basename='labtechnicians')
 router.register('receptionists', ReceptionistViewSet, basename='receptionists')
-router.register('pharmacists', PharmacistViewSet, basename='pharmacists')
 router.register('prescriptions', PrescriptionViewSet, basename='prescriptions')
 router.register('bills', BillViewSet, basename='bills')
 router.register('appointments', AppointmentViewSet, basename='appointments')
 router.register('labresults', LabResultViewSet, basename='labresults')
 router.register('medicines', MedicineViewSet, basename='medicines')
-router.register('nurses', NurseViewSet, basename='nurses')
 from hms import settings
 
 urlpatterns = [

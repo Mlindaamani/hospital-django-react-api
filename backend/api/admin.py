@@ -1,13 +1,11 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
 from .models import (
     Patient, Doctor, Receptionist,
-    LabTechnician, Pharmacist,
+    LabTechnician,
     Appointment, LabResult,
-    Prescription, Bill, User, Medicine, Nurse
-
+    Prescription, Bill, User, Medicine
 )
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
@@ -18,10 +16,10 @@ class CustomUserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     model = User
 
-    list_display = ['email', 'first_name', 'last_name', 'is_superuser', 'role']
+    list_display = ['first_name', 'email',  'last_name', 'is_superuser', 'role', 'phone_number']
     list_filter = ['is_staff', 'is_superuser', 'role']
-    ordering = ['email']
     search_fields = ['email', 'first_name', 'last_name']
+    ordering = ['email']
     filter_horizontal = ()
 
     fieldsets = (
@@ -38,12 +36,6 @@ class CustomUserAdmin(BaseUserAdmin):
     )
 
 
-
-@admin.register(Nurse)
-class NurseAdmin(admin.ModelAdmin):
-    list_display = ['user', 'year_of_experience', 'license_number']
-
-
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
     list_display = ['user__first_name', 'user__last_name',
@@ -53,9 +45,9 @@ class DoctorAdmin(admin.ModelAdmin):
 
 @admin.register(Medicine)
 class MedicineAdmin(admin.ModelAdmin):
-    list_display = ['name', 'dosage', 'unit']
-    list_filter = ['unit']
-    list_editable = ['unit']
+    list_display = ['name', 'dosage', 'stock']
+    list_filter = ['stock']
+    list_editable = ['stock']
 
 
 @admin.register(Receptionist)
@@ -69,12 +61,6 @@ class LabTechnicianAdmin(admin.ModelAdmin):
     list_display = ['id', 'user__first_name', 'user__last_name', 'user__email']
     list_filter = ['user__first_name']
 
-
-@admin.register(Pharmacist)
-class PharmacistAdmin(admin.ModelAdmin):
-    list_display = ['user__first_name', 'user__last_name', 'user__email']
-    list_filter = ['user__first_name']
-    list_per_page= 10
 
 
 @admin.register(Appointment)
@@ -97,7 +83,7 @@ class LabResultAdmin(admin.ModelAdmin):
 
 @admin.register(Prescription)
 class PrescriptionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'patient', 'doctor',
+    list_display = [ 'patient', 'doctor',
                     'prescription_date', 'medicine', 'instructions', 'status']
     list_filter = ['status', 'prescription_date']
     list_editable = ['status']
@@ -111,7 +97,7 @@ class BillAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user__first_name', 'user__last_name', 'gender', 'address',
+    list_display = [ 'user__first_name', 'user__last_name', 'gender', 'address',
                     'user__phone_number', 'user__email',  'file_number']
     list_per_page = 30
     list_editable = ['gender']
