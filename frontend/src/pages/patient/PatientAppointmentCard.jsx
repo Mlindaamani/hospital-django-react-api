@@ -1,27 +1,23 @@
 import React from "react";
 import { ListGroup, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { colorStatus, formatDjangoDateTime, ROLE } from "../utils/functions";
-import { useAuthStore } from "../store/AuthStore";
-import { useAppointmentStore } from "../store/appointmentStore";
-
-export const AppointmentCard = ({ appointment }) => {
-  const {
-    markAppointmentAsCompleted,
-    deleteAppointment,
-    completingAppointment,
-  } = useAppointmentStore();
-
-  const { user } = useAuthStore();
-  const isPatient = user.role === ROLE.PATIENT;
+import { colorStatus, formatDjangoDateTime } from "../../utils/functions";
+import { useAppointmentStore } from "../../store/appointmentStore";
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
+export const PatientAppointmentCard = ({ appointment }) => {
+  const { deleteAppointment } = useAppointmentStore();
   const isCompleted = appointment.status === "Completed";
-
-  const handleComplete = async () => {
-    await markAppointmentAsCompleted(appointment.id);
-  };
 
   const handleCancel = async () => {
     await deleteAppointment(appointment.id);
+  };
+
+  const handleUpadete = () => {
+    toast.success("You are about to update the appointment.", {
+      id: "appointment",
+      position: "top-left",
+    });
   };
 
   return (
@@ -80,19 +76,14 @@ export const AppointmentCard = ({ appointment }) => {
 
       <Card.Footer className="bg-white border-top-0 d-flex justify-content-between flex-wrap p-3 rounded-bottom-4">
         <div className="d-flex gap-2 flex-wrap">
-          {!isPatient && (
-            <>
-              <Button
-                variant="outline-success"
-                size="sm"
-                className="rounded-4"
-                onClick={handleComplete}
-                disabled={isCompleted}
-              >
-                {completingAppointment ? "Marking..." : "Mark as Completed"}
-              </Button>
-            </>
-          )}
+          <Button
+            variant="outline-primary"
+            size="sm"
+            className="rounded-4"
+            onClick={handleUpadete}
+          >
+            Edit
+          </Button>
 
           <Button
             variant="outline-danger"
@@ -103,15 +94,8 @@ export const AppointmentCard = ({ appointment }) => {
             Cancel
           </Button>
         </div>
-
-        {/* View Details Link */}
-        <Link
-          to={`/patient/appointments/${appointment.id}`}
-          className="btn btn-outline-secondary btn-sm rounded-4"
-        >
-          View Details
-        </Link>
       </Card.Footer>
+      <Toaster />
     </Card>
   );
 };

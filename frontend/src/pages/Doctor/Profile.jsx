@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card, Container, Row, Col, Image, Button } from "react-bootstrap";
+import { useAuthStore } from "../../store/AuthStore";
 
 export const Profile = () => {
+  const { profile, userProfile } = useAuthStore();
+
+  useEffect(() => {
+    userProfile();
+  }, [userProfile]);
+
   const profileData = {
-    name: "Dr. Jane Doe",
-    email: "jane.doe@clinic.com",
+    name: profile?.doctor_name,
+    email: profile?.email,
     phone: "+123 456 7890",
-    specialization: "Cardiologist",
+    specialization: profile?.role,
     address: "123 Oysterbay Street, Wellness City",
-    imageUrl: "https://via.placeholder.com/150",
+    imageUrl: `http://127.0.0.1:8000/${profile?.doctor_profile_url}`,
   };
 
   return (

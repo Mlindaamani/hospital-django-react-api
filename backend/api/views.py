@@ -21,7 +21,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-
 class BaseViewSet(ModelViewSet):
     pass
 
@@ -29,7 +28,6 @@ class BaseViewSet(ModelViewSet):
 class MedicineViewSet(BaseViewSet):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-
 
 
 class DoctorViewSet(BaseViewSet):
@@ -45,7 +43,7 @@ class PrescriptionViewSet(BaseViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.role == RoleChoices.DOCTOR:
-            return Prescription.objects.filter(doctor__user=user)
+            return Prescription.objects.filter(doctor=user.doctor)
         else:
             return Prescription.objects.all()
 
@@ -80,8 +78,10 @@ class AppointmentViewSet(BaseViewSet):
 
         if hasattr(user, 'doctor'):
             return Appointment.objects.filter(doctor=user.doctor)
+        
         elif hasattr(user, 'patient'):
             return Appointment.objects.filter(patient=user.patient)
+        
         elif user.role in [RoleChoices.RECEPTIONIST, RoleChoices.ADMIN]:
             return Appointment.objects.all()
         else:

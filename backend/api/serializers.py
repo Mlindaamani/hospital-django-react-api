@@ -34,7 +34,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
-        fields= ['id', 'first_name', 'last_name', 'email', 'role', "patient_profile_url"]
+        fields= ['id', 'first_name', 'last_name', 'email', 'role', "patient_profile_url", "doctor_profile_url"]
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -56,8 +56,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
     def validate(self, data):
+        # Check both date and time
         if data['appointment_date'] < timezone.now():
-            raise serializers.ValidationError("Appointment date cannot be in the past")
+            raise serializers.ValidationError("Appointment cannot be in the past")
         return data
         
 

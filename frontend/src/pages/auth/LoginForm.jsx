@@ -34,6 +34,7 @@ export const LoginForm = () => {
         <Form.Group className="mb-3">
           <Form.Label className="text-dark">Email</Form.Label>
           <Form.Control
+            className="p-2"
             type="email"
             placeholder="Enter email..."
             onChange={(e) => setEmail(e.target.value)}
@@ -43,6 +44,7 @@ export const LoginForm = () => {
         <Form.Group className="mb-4">
           <Form.Label className="text-dark">Password</Form.Label>
           <Form.Control
+            className="p-2"
             type="password"
             placeholder="Enter password..."
             onChange={(e) => setPassword(e.target.value)}

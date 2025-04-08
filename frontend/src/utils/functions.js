@@ -160,13 +160,14 @@ export const formatDjangoDateTime = (djangoDateTime) => {
     second: "2-digit",
     hour12: false,
   };
-  
+
   const formattedDate = date.toLocaleString("en-US", options);
 
   return formattedDate.replace(",", "");
 };
 
 export const getBackendErrorMessage = (error) =>
+  error.response?.data?.non_field_errors[0] ||
   error.response?.data?.detail ||
   error.response.data.message ||
   "An error occurred";

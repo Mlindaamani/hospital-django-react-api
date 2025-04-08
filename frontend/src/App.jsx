@@ -15,9 +15,10 @@ import { Patients } from "./pages/doctor/Patients";
 import { DoctorSettings } from "./pages/doctor/Settings";
 import { Profile } from "./pages/doctor/Profile";
 import { DoctorAnalytics } from "./pages/doctor/DoctorAnalytics";
-import { AppointmentForm } from "./pages/patient/Appointment";
+import { AppointmentForm } from "./pages/patient/NewAppointment";
 import { AppointmentDetail } from "./pages/patient/AppointmentDetail";
-import { PatientProfile } from "./pages/patient/Profile";
+import { PatientProfile } from "./pages/patient/PatientProfile";
+import { PatientAppointments } from "./pages/patient/PatientsAppointments";
 
 export const App = () => {
   return (
@@ -52,7 +53,7 @@ export const App = () => {
         {/* Patient */}
         <Route path="/patient" element={<PatientLayout />}>
           <Route index element={<Analytics />} />
-          <Route path="appointments" element={<Appointments />} />
+          <Route path="appointments" element={<PatientAppointments />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="new" element={<AppointmentForm />} />
           <Route path="profile" element={<PatientProfile />} />

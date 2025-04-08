@@ -32,19 +32,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
     
+    
     @property
     def patient_profile_url(self):
-        try:
+        if hasattr(self, 'patient') and self.patient.profile_picture:
             return self.patient.profile_picture.url
-        except AttributeError:
-            return None
+        return None
         
     @property
     def doctor_profile_url(self):
-        try:
+        if hasattr(self, 'doctor') and self.doctor.profile_picture:
             return self.doctor.profile_picture.url
-        except AttributeError:
-            return None
+        return None
 
 
 class CommonProfileBase(models.Model):
@@ -59,16 +58,10 @@ class CommonProfileBase(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
-    def delete(self):
-        self.profile_picture.delete()
-        super().delete()
-
-# modulify.ai
-
 
 class DoctorProfileBase(CommonProfileBase):
     specialization = models.CharField(max_length=100, choices=SpecializationChoice.SPECIALIZATION_CHOICES, default=SpecializationChoice.GENERAL_MEDICINE)
-    license_number = models.CharField(max_length=255, unique=True, default='Not provided')
+    license_number = models.CharField(max_length=255, unique=True, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -81,6 +74,10 @@ class Doctor(DoctorProfileBase):
     
     def __str__(self):
         return f"Dr. {self.user.first_name}"
+    
+    def delete(self):
+        self.profile_picture.delete()
+        super().delete()
     
     @property
     def full_name(self):
@@ -99,6 +96,10 @@ class Receptionist(CommonProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receptionist')
     profile_picture = models.ImageField(upload_to='profiles/', default='receptionist/default.jpg')
 
+    def delete(self):
+        self.profile_picture.delete()
+        super().delete()
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
@@ -107,10 +108,14 @@ class LabTechnician(CommonProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_technician')
     profile_picture = models.ImageField(upload_to='profiles/', default='lab_tech/default.jpg')
     license_number = models.CharField(max_length=255, unique=True, default='Not provided')
-   
-    
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+    
+    def delete(self):
+        self.profile_picture.delete()
+        super().delete()
+   
 
 
 class Patient(models.Model):
@@ -130,6 +135,12 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
+    
+
+    def delete(self):
+        self.profile_picture.delete()
+        super().delete()
+   
     
     @property
     def first_name(self):

@@ -16,7 +16,7 @@ export const PatientProfile = () => {
     phone: "+123 456 7890",
     specialization: "Patient",
     address: "123 Oysterbay Street, Wellness City",
-    imageUrl: `http://127.0.0.1:8000/${profile.patient_profile_url}`,
+    imageUrl: `http://127.0.0.1:8000/${profile?.patient_profile_url}`,
   };
 
   return (
