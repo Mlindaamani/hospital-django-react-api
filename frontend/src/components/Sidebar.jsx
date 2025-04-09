@@ -2,7 +2,6 @@ import { SidebarLink } from "./SidebarLinks";
 import { Brand } from "./Brand";
 import settings from "../assets/svg/settings.svg";
 import balance from "../assets/svg/balance.svg";
-import person from "../assets/svg/person.svg";
 import profile from "../assets/svg/profile.svg";
 
 export const DoctorSidebar = () => (
@@ -14,7 +13,6 @@ export const DoctorSidebar = () => (
         icon={balance}
         text="Appointments"
       />
-      <SidebarLink to="/doctor/labresults" icon={person} text="LabResults" />
       <SidebarLink to="/doctor/patients" icon={profile} text="Patients" />
       <SidebarLink to="/doctor/profile" icon={profile} text="Profile" />
       <SidebarLink to="/doctor/settings" icon={settings} text="Settings" />

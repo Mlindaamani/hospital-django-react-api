@@ -16,7 +16,7 @@ export const PatientAppointmentCard = ({ appointment }) => {
   const handleUpadete = () => {
     toast.success("You are about to update the appointment.", {
       id: "appointment",
-      position: "top-left",
+      position: "bottom-center",
     });
   };
 

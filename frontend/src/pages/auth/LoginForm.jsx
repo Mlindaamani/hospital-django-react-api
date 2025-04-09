@@ -22,13 +22,9 @@ export const LoginForm = () => {
         className="p-2 p-md-3 rounded-5"
       >
         <div className="text-center mb-4">
-          <Image
-            src={chats}
-            fluid
-            className="mb-3 rounded-2"
-            style={{ maxWidth: "80px" }}
-          />
-          <h2 className="h3 fw-bold text-dark">LOGIN NOW</h2>
+          <h5 className="h3 fw-bold text-dark" style={{ color: "#2D4200" }}>
+            LOGIN NOW
+          </h5>
         </div>
 
         <Form.Group className="mb-3">
@@ -52,20 +48,18 @@ export const LoginForm = () => {
         </Form.Group>
 
         <Button
+          style={{
+            backgroundColor: "#2D4200",
+            border: "none",
+            outline: "none",
+            boxShadow: "none",
+          }}
           className="w-100 py-2 fw-bold mb-3"
           type="submit"
           disabled={loading}
-          variant="warning"
         >
           {loading ? "Logging in..." : "Login"}
         </Button>
-
-        <div className="text-center">
-          <span className="text-muted">Don't have an account?</span>{" "}
-          <Link to="#" className="text-warning text-decoration-none fw-bold">
-            Register
-          </Link>
-        </div>
       </Form>
       <Toaster position="top-center" />
     </div>
