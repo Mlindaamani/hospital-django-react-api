@@ -3,6 +3,8 @@ import { Brand } from "./Brand";
 import settings from "../assets/svg/settings.svg";
 import balance from "../assets/svg/balance.svg";
 import profile from "../assets/svg/profile.svg";
+import appo from "../assets/svg/appo.svg";
+import friends from "../assets/svg/friends.svg";
 
 export const DoctorSidebar = () => (
   <div className="p-3">
@@ -10,11 +12,12 @@ export const DoctorSidebar = () => (
       <Brand />
       <SidebarLink
         to="/doctor/appointments"
-        icon={balance}
+        icon={appo}
         text="Appointments"
       />
-      <SidebarLink to="/doctor/patients" icon={profile} text="Patients" />
+      <SidebarLink to="/doctor/patients" icon={friends} text="Patients" />
       <SidebarLink to="/doctor/profile" icon={profile} text="Profile" />
+      <SidebarLink to="/doctor/bills" icon={balance} text="Bills" />
       <SidebarLink to="/doctor/settings" icon={settings} text="Settings" />
     </div>
   </div>
@@ -45,6 +48,7 @@ export const PatientSidebar = () => (
         text="My Appointments"
       />
       <SidebarLink to="/patient/new" icon={profile} text="New Appointment" />
+      <SidebarLink to="/patient/bills" icon={balance} text="Bills" />
       <SidebarLink to="/patient/profile" icon={settings} text="My Profile" />
     </div>
   </div>

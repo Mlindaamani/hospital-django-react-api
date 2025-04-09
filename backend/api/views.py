@@ -3,9 +3,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from .permissions import (
-     IsReceptionist, IsAdminOrDoctorOrLabTech,
-    IsAdmin, IsAdminOrDoctorOrReceptionist)
+from .permissions import (IsReceptionist, IsAdminOrDoctorOrLabTech, IsAdminOrDoctorOrReceptionist)
 
 from .serializers import (
     DoctorSerializer, ReceptionistSerializer, PatientSerializer,
@@ -57,7 +55,18 @@ class LabTechnicianViewSet(BaseViewSet):
 class BillViewSet(BaseViewSet):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
-    permission_classes = [IsAdmin, IsReceptionist]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if hasattr(user, 'patient'):
+            return Bill.objects.filter(patient=user.patient)
+        elif hasattr(user, 'doctor'):
+            return Bill.objects.filter(doctor=user.doctor)
+        elif user.role == RoleChoices.ADMIN or hasattr(user, 'receptionist'):
+            return Bill.objects.all()
+        else:
+            return Bill.objects.none()
     
 
 

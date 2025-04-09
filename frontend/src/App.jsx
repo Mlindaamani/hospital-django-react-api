@@ -40,6 +40,7 @@ export const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="patients" element={<Patients />} />
           <Route path="settings" element={<DoctorSettings />} />
+          <Route path="bills" element={<h2>Your Income generated</h2>} />
         </Route>
 
         {/* Receptionists */}
@@ -53,8 +54,9 @@ export const App = () => {
         {/* Patient */}
         <Route path="/patient" element={<PatientLayout />}>
           <Route index element={<Analytics />} />
-          <Route path="appointments" element={<PatientAppointments />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
+          <Route path="appointments" element={<PatientAppointments />} />
+          <Route path="bills" element={<h3>Your Appointment bills</h3>} />
           <Route path="new" element={<AppointmentForm />} />
           <Route path="profile" element={<PatientProfile />} />
         </Route>

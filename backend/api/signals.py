@@ -3,7 +3,6 @@ from .choices import AppointmentChoice, BillChoice, RoleChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .utils import bill_amount_by_specialization
-from django.contrib import messages
 
 
 
@@ -35,6 +34,5 @@ def generate_bill_on_completion(sender, instance, created, **kwargs):
                 doctor=instance.doctor,
                 appointment=instance,
                 amount= bill_amount_by_specialization(instance.doctor.specialization),
-                status=BillChoice.STATUS_UNPAID,
+                status=BillChoice.STATUS_PAID,
             )
-            messages.success("Bill generated successfully.")

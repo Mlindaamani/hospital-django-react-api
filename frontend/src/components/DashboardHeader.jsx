@@ -20,7 +20,7 @@ export const DashboardHeader = () => {
       </div>
       <div className="d-flex align-items-center gap-2">
         {/* Username */}
-        <span className="text-secondary fw-bold">
+        <span className="fw-bold" style={{ color: "#2D4200" }}>
           {user?.first_name} {user?.last_name}
         </span>
         <Image
@@ -33,7 +33,7 @@ export const DashboardHeader = () => {
         />
         <Button
           onClick={() => logout(navigate)}
-          variant="secondary"
+          style={{ backgroundColor: "#2D4200", border: "none" }}
           className="d-flex justify-content-between align-items-center gap-2 btn-sm"
         >
           <Image src={logoutGray} />

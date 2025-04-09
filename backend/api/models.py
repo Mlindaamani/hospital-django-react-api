@@ -70,7 +70,7 @@ class DoctorProfileBase(CommonProfileBase):
     
 class Doctor(DoctorProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doctor')
-    profile_picture = models.ImageField(upload_to='profiles/', default='doctor/default.jpg')
+    profile_picture = models.ImageField(upload_to='profiles/', default='default.svg')
     
     def __str__(self):
         return f"Dr. {self.user.first_name}"
@@ -94,7 +94,7 @@ class Doctor(DoctorProfileBase):
     
 class Receptionist(CommonProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receptionist')
-    profile_picture = models.ImageField(upload_to='profiles/', default='receptionist/default.jpg')
+    profile_picture = models.ImageField(upload_to='profiles/', default='default.svg')
 
     def delete(self):
         self.profile_picture.delete()
@@ -106,7 +106,7 @@ class Receptionist(CommonProfileBase):
 
 class LabTechnician(CommonProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_technician')
-    profile_picture = models.ImageField(upload_to='profiles/', default='lab_tech/default.jpg')
+    profile_picture = models.ImageField(upload_to='profiles/', default='default.svg')
     license_number = models.CharField(max_length=255, unique=True, default='Not provided')
 
     def __str__(self):
@@ -129,7 +129,7 @@ class Patient(models.Model):
     has_insurance = models.BooleanField(default=False)
     insurance_number = models.CharField(max_length=255, blank=True, null=True)
     is_discharged = models.BooleanField(default=False)
-    profile_picture = models.ImageField(upload_to='profiles/', default='patient/default.jpg')
+    profile_picture = models.ImageField(upload_to='profiles/', default='default.svg')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
