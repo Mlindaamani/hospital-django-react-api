@@ -111,7 +111,8 @@ class BillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bill
         fields = ['id', 'patient_name', 'patient_file_number',
-                  'amount', 'date_issued', 'status']
+                  'amount', 'date_issued', 'status',
+                    'doctor_name', 'doctor_specialization', 'doctor_specialization_rate']
 
 
 class MedicineSerializer(serializers.ModelSerializer):

@@ -1,16 +1,15 @@
 import axios from "axios";
 import {
-  getAccessToken,
   storeTokens,
   removeTokens,
   getRefreshToken,
+  getAccessToken,
 } from "../utils/functions";
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:8000",
 });
 
-// Attach access token to authorization headers.
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
@@ -34,19 +33,12 @@ axiosInstance.interceptors.response.use(
 
       try {
         const refreshToken = getRefreshToken();
-        if (!refreshToken) {
-          removeTokens();
-          window.location.href = "/login";
-          return Promise.reject(error);
-        }
-
-        const response = await axiosInstance.post("auth/jwt/refresh/", {
-          refreshToken,
+        const { data } = await axiosInstance.post("auth/jwt/refresh/", {
+          refresh: refreshToken,
         });
 
-        storeTokens(response.accessToken, refreshToken);
-        previousRequest.headers.Authorization = `JWT ${response.accessToken}`;
-        // Retry previous request with new access token
+        storeTokens(data.access, refreshToken);
+        previousRequest.headers.Authorization = `JWT ${data.access}`;
         return axiosInstance(previousRequest);
       } catch (refreshError) {
         removeTokens();

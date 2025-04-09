@@ -3,6 +3,23 @@ export const storeTokens = (accessToken, refreshToken) => {
   localStorage.setItem("refresh", refreshToken);
 };
 
+export const getAccessToken = () => {
+  return localStorage.getItem("access");
+};
+
+export const getRefreshToken = () => {
+  return localStorage.getItem("refresh");
+};
+
+export const removeTokens = () => {
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+};
+
+export const isAuthenticated = () => {
+  return getAccessToken() != null ? true : false;
+};
+
 export const ROLE = {
   DOCTOR: "doctor",
   RECEPTIONIST: "receptionist",
@@ -55,23 +72,6 @@ export const redirectTo = (navigate, role) => {
       navigate("/", { replace: true });
       break;
   }
-};
-
-export const getAccessToken = () => {
-  return localStorage.getItem("access");
-};
-
-export const getRefreshToken = () => {
-  return localStorage.getItem("refresh");
-};
-
-export const removeTokens = () => {
-  localStorage.removeItem("access");
-  localStorage.removeItem("refresh");
-};
-
-export const isAuthenticated = () => {
-  return getAccessToken() != null ? true : false;
 };
 
 export const filterPatients = (
@@ -148,7 +148,6 @@ export const formatDjangoDateTime = (djangoDateTime) => {
 
   const date = new Date(djangoDateTime);
 
-  // Check if the date is valid
   if (isNaN(date.getTime())) return "";
 
   const options = {
@@ -167,7 +166,7 @@ export const formatDjangoDateTime = (djangoDateTime) => {
 };
 
 export const getBackendErrorMessage = (error) =>
-  error.response?.data?.non_field_errors[0] ||
+  error.response?.data?.non_field_errors ||
   error.response?.data?.detail ||
   error.response.data.message ||
   "An error occurred";

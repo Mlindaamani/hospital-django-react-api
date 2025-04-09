@@ -2,9 +2,8 @@ from .models import Appointment, Bill, User, Doctor, Receptionist, LabTechnician
 from .choices import AppointmentChoice, BillChoice, RoleChoices
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.timezone import now
 from .utils import bill_amount_by_specialization
-
-
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -27,8 +26,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 def generate_bill_on_completion(sender, instance, created, **kwargs):
     """Generate a bill when an appointment is marked as completed."""
     if not created and instance.status == AppointmentChoice.STATUS_COMPLETED:
-        # Check if a bill already exists to avoid duplicates
-        if not hasattr(instance, 'bill'):
+        if not hasattr(instance, 'bills'):
             Bill.objects.create(
                 patient=instance.patient,
                 doctor=instance.doctor,
@@ -36,3 +34,17 @@ def generate_bill_on_completion(sender, instance, created, **kwargs):
                 amount= bill_amount_by_specialization(instance.doctor.specialization),
                 status=BillChoice.STATUS_PAID,
             )
+
+
+@receiver(post_save, sender=Patient)
+def generate_file_number(sender, instance, created, **kwargs):
+    """Generate a file number for the patient when their profile is created."""
+    print("Generating file number")
+
+    if created and isinstance(instance, Patient):
+        year = now().year
+        file_number = f"PHMS-{year}-{instance.id:04d}"
+        instance.file_number = file_number
+        instance.save()
+
+

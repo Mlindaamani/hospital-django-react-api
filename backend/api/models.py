@@ -6,6 +6,7 @@ LabResultsChoice, PrescriptionChoice)
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import HmsAccountManager
 from .choices import SpecializationChoice
+from .utils import bill_amount_by_specialization
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -239,10 +240,21 @@ class Bill(models.Model):
     @property
     def patient_name(self):
         return f"{self.patient.user.first_name} {self.patient.user.last_name}"
+    
+    @property
+    def doctor_name(self):
+        return f"{self.doctor.user.first_name} {self.doctor.user.last_name}"
+    @property
+    def doctor_specialization(self):
+        return self.doctor.specialization
 
     @property
     def patient_file_number(self):
         return self.patient.file_number
+    
+    @property
+    def doctor_specialization_rate(self):
+        return bill_amount_by_specialization(self.doctor.specialization)
 
 
     def __str__(self):
