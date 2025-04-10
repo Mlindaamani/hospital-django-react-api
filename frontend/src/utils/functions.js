@@ -27,6 +27,26 @@ export const ROLE = {
   LAB_TECH: "lab_tech",
 };
 
+export const dashboardTitle = (user) => {
+  if (user.role === ROLE.DOCTOR) return "Doctor Dashboard";
+  if (user.role === ROLE.RECEPTIONIST) return "Receptionist Dashboard";
+  if ((user.role = ROLE.PATIENT)) return "Patient Dashboard";
+  if ((user.role = ROLE.LAB_TECH)) return "LabTech Dashboard";
+};
+
+export const TOAST_POSITION = {
+  TOP_LEFT: "top-left",
+  TOP_RIGHT: "top-right",
+  BOTTOM_LEFT: "bottom-left",
+  BOTTOM_RIGHT: "bottom-right",
+  TOP_CENTER: "top-center",
+  BOTTOM_CENTER: "bottom-center",
+  CENTER: "center",
+  CENTER_LEFT: "center-left",
+  CENTER_RIGHT: "center-right",
+  LEFT: "left",
+};
+
 export const navigateTo = (user) => {
   switch (user.role) {
     case ROLE.DOCTOR:

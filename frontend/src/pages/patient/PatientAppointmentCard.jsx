@@ -1,10 +1,8 @@
 import React from "react";
-import { ListGroup, Card, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { ListGroup, Card, Button, Row, Col } from "react-bootstrap";
 import { colorStatus, formatDjangoDateTime } from "../../utils/functions";
 import { useAppointmentStore } from "../../store/appointmentStore";
 import toast from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
 export const PatientAppointmentCard = ({ appointment }) => {
   const { deleteAppointment } = useAppointmentStore();
   const isCompleted = appointment.status === "Completed";
@@ -13,19 +11,64 @@ export const PatientAppointmentCard = ({ appointment }) => {
     await deleteAppointment(appointment.id);
   };
 
-  const handleUpadete = () => {
-    toast.success("You are about to update the appointment.", {
-      id: "appointment",
-      position: "bottom-center",
-    });
+  const handleUpdate = () => {
+    toast(
+      (t) => (
+        <div className="p-3">
+          <Row className="mb-3">
+            <Col>
+              <p>Are you sure you want to delete this appointment?</p>
+            </Col>
+          </Row>
+          <Row className="g-2">
+            <Col>
+              <Button
+                variant="danger"
+                size="sm"
+                className="w-100"
+                onClick={() => {
+                  deleteAppointment(appointment.id);
+                  toast.dismiss(t.id);
+                }}
+              >
+                Confirm
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                className="w-100"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Cancel
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      ),
+      {
+        id: "delete-appointment",
+        position: "top-center",
+        duration: Infinity,
+        style: {
+          background: "#f8d7da",
+          color: "#721c24",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          maxWidth: "400px",
+          width: "100%",
+        },
+      }
+    );
   };
 
   return (
     <Card
       className="rounded-4 shadow-lg h-100 card-hover"
       style={{
-        transition: "0.3s",
-        backgroundColor: "#f9f9f9",
+        transition: "0.1s",
+        backgroundColor: "#fff",
         borderBottom: isCompleted ? "8px solid #28a745" : "2px solid #fff",
       }}
     >
@@ -80,7 +123,7 @@ export const PatientAppointmentCard = ({ appointment }) => {
             variant="outline-primary"
             size="sm"
             className="rounded-4"
-            onClick={handleUpadete}
+            onClick={handleUpdate}
           >
             Edit
           </Button>
@@ -95,7 +138,6 @@ export const PatientAppointmentCard = ({ appointment }) => {
           </Button>
         </div>
       </Card.Footer>
-      <Toaster />
     </Card>
   );
 };

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import { Button, Form, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import chats from "../../assets/svg/chats.svg";
 import { useAuthStore } from "../../store/AuthStore";
 
 export const LoginForm = () => {
@@ -61,7 +58,6 @@ export const LoginForm = () => {
           {loading ? "Logging in..." : "Login"}
         </Button>
       </Form>
-      <Toaster position="top-center" />
     </div>
   );
 };

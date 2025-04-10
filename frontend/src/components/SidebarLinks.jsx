@@ -12,7 +12,7 @@ export const SidebarLink = ({ to, icon, text }) => {
       to={to}
       end
       className={`text-decoration-none text-start w-100 text-light mb-1 p-2  side-bar-links border-right-2 ${
-        isActive ? "active" : ""
+        isActive ? "active fw-semibold" : ""
       }`}
     >
       <Image className="me-2" src={icon} />

@@ -1,22 +1,29 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Image, Button } from "react-bootstrap";
 import { useAuthStore } from "../store/AuthStore";
 import avatar from "../assets/svg/avatar.svg";
 import toggler from "../assets/svg/toggler.svg";
 import logoutGray from "../assets/svg/logout.svg";
+import { dashboardTitle } from "../utils/functions";
 
 export const DashboardHeader = () => {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { logout, profile, userProfile } = useAuthStore();
   const { user } = useAuthStore();
-  const location = useLocation();
+
+  useEffect(() => {
+    userProfile();
+  }, [userProfile]);
+
 
   return (
     <header className="bg-light-subtle border-bottom d-flex justify-content-between align-items-center p-3">
       <div className="d-flex align-items-center">
         <img src={toggler} alt="Toggle Sidebar" className="me-3" />
-        <small className="mb-0 text-secondary">{location.pathname}</small>
+        <small className="mb-0 fw-semibold" style={{ color: "#2D4200" }}>
+          {dashboardTitle(user)}
+        </small>
       </div>
       <div className="d-flex align-items-center gap-2">
         {/* Username */}
@@ -24,7 +31,7 @@ export const DashboardHeader = () => {
           {user?.first_name} {user?.last_name}
         </span>
         <Image
-          src={user?.photo ? user.photo : avatar}
+          src={profile.patient_profile_url}
           roundedCircle
           fluid
           width={50}
