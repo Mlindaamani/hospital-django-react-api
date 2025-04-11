@@ -1,9 +1,13 @@
 from datetime import timedelta
 from pathlib import Path
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-o!1@-1=a+*^jox=agejy0yu8@0e(ax*m+rkoy_s2-8q54*^!ml'
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+SECRET_KEY= config('SECRET_KEY', cast=str)
+
 
 DEBUG = True
 
@@ -85,12 +89,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hms.wsgi.application'
 
+
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },    
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB'),
+        'USER': config('POSTGRES_USER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'HOST': config('POSTGRES_HOST'),
+        'PORT': config('POSTGRES_PORT', cast=int),
+    }
 }
 
 

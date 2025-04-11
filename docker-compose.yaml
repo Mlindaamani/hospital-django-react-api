@@ -5,13 +5,11 @@ services:
       - "5432:5432"
     container_name: hms_database
 
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+    env_file:
+      - ./backend/.env
 
     volumes:
-      - ./data/db:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
 
   frontend:
     build:
@@ -37,16 +35,16 @@ services:
       dockerfile: Dockerfile
     container_name: hms_backend
 
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+    env_file:
+      - /backend/.env
 
     ports:
       - "8000:8000"
 
     volumes:
-      - ./backend:/app/backend
+      - postgres_data:/var/lib/postgresql/data
 
     depends_on:
       - db
+volumes:
+  postgres_data:
