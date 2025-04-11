@@ -1,10 +1,9 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:14-alpine
     ports:
-      - '5432:5432'
+      - "5432:5432"
+    container_name: hms_database
 
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -18,20 +17,25 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    container_name: hms_frontend
 
     ports:
-      - '3000:3000'
+      - "5173:5173"
 
     volumes:
       - ./frontend:/app/frontend
+      - /app/node_modules
+    stdin_open: true
+    tty: true
 
     depends_on:
       - backend
 
-  backend: 
-    build: 
+  backend:
+    build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: hms_backend
 
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -39,7 +43,7 @@ services:
       - POSTGRES_DB=postgres
 
     ports:
-      - '8000:8000'
+      - "8000:8000"
 
     volumes:
       - ./backend:/app/backend
