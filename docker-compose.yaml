@@ -16,7 +16,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: hms_frontend
-    restart: always
 
     ports:
       - "5173:5173"
@@ -48,6 +47,6 @@ services:
 
     depends_on:
       - db
-      
+
 volumes:
   postgres_data:
