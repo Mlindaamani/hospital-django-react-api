@@ -1,4 +1,8 @@
 // mock.js
+
+// docker-compose exec backend python manage.py migrate
+// docker-compose exec backend python manage.py createsuperuser
+// docker-compose exec backend python manage.py runserver 0.0.0.0:8000
 export const users = [
   {
     username: "Mlindaamani",

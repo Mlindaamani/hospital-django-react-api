@@ -16,15 +16,17 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: hms_frontend
+    restart: always
 
     ports:
       - "5173:5173"
 
     volumes:
-      - ./frontend:/app/frontend
-      - /app/node_modules
-    stdin_open: true
-    tty: true
+      - ./frontend:/app
+      - /app/node_modules 
+
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
     depends_on:
       - backend
@@ -36,7 +38,7 @@ services:
     container_name: hms_backend
 
     env_file:
-      - /backend/.env
+      - ./backend/.env
 
     ports:
       - "8000:8000"
@@ -46,5 +48,6 @@ services:
 
     depends_on:
       - db
+      
 volumes:
   postgres_data:
