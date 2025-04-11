@@ -1,10 +1,12 @@
-venv
+*.env
 env
-.env
+venv
+.dockerignore
+.venv
 Dockerfile
 __pycache__
 *.pyc
 *.pyo
 .git
-node_modules
 *.log
+
