@@ -7,6 +7,7 @@ class RoleChoices:
     PHARMACIST = 'pharmacist'
     NURSE = 'nurse'
     PATIENT='patient'
+    
     ROLE_CHOICES = [
         (ADMIN, 'Admin'), (DOCTOR, 'Doctor'),
         (RECEPTIONIST, 'Receptionist'),
@@ -33,6 +34,7 @@ class AppointmentChoice:
     STATUS_SCHEDULED = 'Scheduled'
     STATUS_COMPLETED = 'Completed'
     STATUS_CANCELLED = 'Cancelled'
+
     STATUS_CHOICES = [
         (STATUS_SCHEDULED, 'Scheduled'), 
         (STATUS_COMPLETED, 'Completed'), 
@@ -42,6 +44,7 @@ class AppointmentChoice:
 class PrescriptionChoice:
     STATUS_PENDING = 'pending'
     STATUS_DESPENSED = 'dispensed'
+
     STATUS_CHOICES = [
         (STATUS_PENDING, 'Pending'),
         (STATUS_DESPENSED, 'Dispensed')
@@ -51,6 +54,7 @@ class PrescriptionChoice:
 class LabResultsChoice:
     STATUS_PENDING = 'Pending'
     STATUS_COMPLETED = 'Completed'
+
     STATUS_CHOICES = [
         (STATUS_PENDING, 'Pending'),
         (STATUS_COMPLETED, 'Completed')
@@ -60,6 +64,7 @@ class LabResultsChoice:
 class BillChoice:
     STATUS_UNPAID = 'Unpaid'
     STATUS_PAID = 'Paid'
+
     STATUS_CHOICES = [(STATUS_UNPAID, 'Unpaid'), (STATUS_PAID, 'Paid')]
 
 
@@ -73,6 +78,7 @@ class  SpecializationChoice:
     PSYCHIATRY = 'Psychiatry'
     RADIOLOGY = 'Radiology'
     GENERAL_MEDICINE = 'General Medicine'
+
     SPECIALIZATION_CHOICES = [
         (CARDIOLOGY, 'Cardiology'),
         (DERMATOLOGY, 'Dermatology'),

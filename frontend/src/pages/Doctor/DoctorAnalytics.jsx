@@ -55,7 +55,14 @@ export const DoctorAnalytics = () => {
 
   return (
     <Container className="mt-5">
-      <h3 className="text-primary mb-4">Doctor Analytics</h3>
+      <h3
+        className="mb-4 fw-semibold"
+        style={{
+          color: "#2D4263",
+        }}
+      >
+        Doctor Analytics
+      </h3>
 
       <div className="d-flex justify-content-end gap-2 mb-3">
         <Button variant="outline-secondary rounded-4" onClick={handleExportCSV}>
@@ -100,7 +107,14 @@ export const DoctorAnalytics = () => {
       <Row className="mt-5 g-4">
         <Col md={6}>
           <Card className="shadow-lg border-0 rounded-4 p-4">
-            <h6 className="mb-3 text-primary">Appointment Breakdown</h6>
+            <h6
+              className="mb-3"
+              style={{
+                color: "#2D4263",
+              }}
+            >
+              Appointment Breakdown
+            </h6>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -122,7 +136,14 @@ export const DoctorAnalytics = () => {
 
         <Col md={6}>
           <Card className="shadow-lg border-0 rounded-4 p-4">
-            <h6 className="mb-3 text-primary">Appointments Over Time</h6>
+            <h6
+              className="mb-3"
+              style={{
+                color: "#2D4263",
+              }}
+            >
+              Appointments Over Time
+            </h6>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={lineChartData}>
                 <CartesianGrid strokeDasharray="3 3" />

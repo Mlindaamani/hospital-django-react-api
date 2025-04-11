@@ -26,6 +26,17 @@ class AppointmentManager(models.Manager):
         """Return all appointments with 'scheduled' status."""
         from .choices import AppointmentChoice
         return self.get_queryset().filter(status=AppointmentChoice.STATUS_SCHEDULED)
+
+            
+    def today(self):
+        """Return appointments scheduled for today."""
+        now = timezone.now()
+        start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+        return self.get_queryset().filter(
+            appointment_date__gte=start_of_day,
+            appointment_date__lte=end_of_day
+        ).order_by('appointment_date')
     
 
     def completed(self):
@@ -65,14 +76,5 @@ class AppointmentManager(models.Manager):
             queryset = queryset.filter(patient=patient)
         return queryset
 
-    
-    def today(self):
-        """Return appointments scheduled for today."""
-        now = timezone.now()
-        start_of_day = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_of_day = now.replace(hour=23, minute=59, second=59, microsecond=999999)
-        return self.get_queryset().filter(
-            appointment_date__gte=start_of_day,
-            appointment_date__lte=end_of_day
-        ).order_by('appointment_date')
+
 

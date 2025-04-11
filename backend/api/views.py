@@ -61,6 +61,7 @@ class BillViewSet(BaseViewSet):
         user = self.request.user
         if hasattr(user, 'patient'):
             return Bill.objects.filter(patient=user.patient)
+        
         elif hasattr(user, 'doctor'):
             return Bill.objects.filter(doctor=user.doctor)
         elif user.role == RoleChoices.ADMIN or hasattr(user, 'receptionist'):
@@ -86,6 +87,8 @@ class AppointmentViewSet(BaseViewSet):
         user = self.request.user
 
         if hasattr(user, 'doctor'):
+            scheduled = Appointment.objects.today()
+            print(list(scheduled))
             return Appointment.objects.filter(doctor=user.doctor)
         
         elif hasattr(user, 'patient'):

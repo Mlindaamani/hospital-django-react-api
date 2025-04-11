@@ -16,13 +16,13 @@ export const AppointmentForm = () => {
   const [reason, setReason] = useState("");
   const navigate = useNavigate();
 
-  // Create Date objects for minTime and maxTime
   const today = new Date();
   const minTime = new Date(today);
   minTime.setHours(8, 0, 0, 0);
+  console.log(today.getUTCDate());
 
   const maxTime = new Date(today);
-  maxTime.setHours(19, 0, 0, 0);
+  maxTime.setHours(23, 0, 0, 0);
 
   useEffect(() => {
     getDoctors();

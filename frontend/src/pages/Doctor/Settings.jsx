@@ -40,7 +40,14 @@ export const DoctorSettings = () => {
       <Row className="justify-content-center">
         <Col md={10}>
           <Card className="p-4 shadow-lg rounded-4 border-0">
-            <h4 className="mb-5 text-primary ">⚙️ Doctor Settings</h4>
+            <h4
+              className="mb-5"
+              style={{
+                color: "#2D4263",
+              }}
+            >
+              ⚙️ Doctor Settings
+            </h4>
 
             {success && (
               <Alert variant="success">Settings updated successfully!</Alert>
@@ -128,8 +135,11 @@ export const DoctorSettings = () => {
               </Form.Group>
 
               <Button
+                style={{
+                  backgroundColor: "#2D4263",
+                  outline: "none",
+                }}
                 type="submit"
-                variant="primary"
                 className="rounded-4 px-4"
               >
                 Save Changes

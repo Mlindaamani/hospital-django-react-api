@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import HmsAccountManager
 from .choices import SpecializationChoice
 from .utils import bill_amount_by_specialization
+from .managers import AppointmentManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -59,6 +60,8 @@ class CommonProfileBase(models.Model):
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
+    
+
 
 class DoctorProfileBase(CommonProfileBase):
     specialization = models.CharField(max_length=100, choices=SpecializationChoice.SPECIALIZATION_CHOICES, default=SpecializationChoice.GENERAL_MEDICINE)
@@ -68,7 +71,6 @@ class DoctorProfileBase(CommonProfileBase):
         abstract = True
 
 
-    
 class Doctor(DoctorProfileBase):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='doctor')
     profile_picture = models.ImageField(upload_to='profiles/', default='default.svg')
@@ -140,8 +142,7 @@ class Patient(models.Model):
 
     def delete(self):
         self.profile_picture.delete()
-        super().delete()
-   
+        super.delete()
     
     @property
     def first_name(self):
@@ -150,7 +151,8 @@ class Patient(models.Model):
     @property
     def last_name(self):
         return self.user.last_name
-    
+
+
 class Appointment(models.Model):
     patient = models.ForeignKey(
         Patient, on_delete=models.CASCADE, related_name='appointments')
@@ -163,6 +165,7 @@ class Appointment(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = AppointmentManager()
 
     @property
     def patient_file_number(self):
@@ -236,7 +239,7 @@ class Bill(models.Model):
     status = models.CharField(
         max_length=20, choices=BillChoice.STATUS_CHOICES, default=BillChoice.STATUS_UNPAID)
     
-
+    
     @property
     def patient_name(self):
         return f"{self.patient.user.first_name} {self.patient.user.last_name}"
