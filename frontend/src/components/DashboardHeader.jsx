@@ -16,7 +16,6 @@ export const DashboardHeader = () => {
     userProfile();
   }, [userProfile]);
 
-
   return (
     <header className="bg-light-subtle border-bottom d-flex justify-content-between align-items-center p-3">
       <div className="d-flex align-items-center">
@@ -31,7 +30,7 @@ export const DashboardHeader = () => {
           {user?.first_name} {user?.last_name}
         </span>
         <Image
-          src={profile.patient_profile_url}
+          src={profile?.patient_profile_url}
           roundedCircle
           fluid
           width={50}

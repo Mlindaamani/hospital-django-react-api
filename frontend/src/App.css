@@ -5,6 +5,16 @@
       font-family: sans-serif;
 }
 
+/* New App css */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  color: #fff;
+}
+
 .labtest,
 .appointment {
   margin-top: 20px;
@@ -39,17 +49,6 @@
 
 .card-hover:hover {
   border: 2px solid #fff;
-}
-
-
-/* New App css */
-body,
-html {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
-  color: #fff;
 }
 
 

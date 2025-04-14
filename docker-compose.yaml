@@ -37,7 +37,8 @@ services:
       dockerfile: Dockerfile
     container_name: api
     command: python manage.py runserver 0.0.0.0:8000
-    env_file: ./backend/.env
+    env_file:
+      - ./backend/.env
     ports:
       - "8000:8000"
     volumes:
