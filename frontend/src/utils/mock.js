@@ -3,6 +3,7 @@
 // docker-compose exec backend python manage.py migrate
 // docker-compose exec backend python manage.py createsuperuser
 // docker-compose exec backend python manage.py runserver 0.0.0.0:8000
+//  docker-compose exec django_backend bash
 export const users = [
   {
     username: "Mlindaamani",
