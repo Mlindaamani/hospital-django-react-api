@@ -41,7 +41,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./backend:/app
     networks:
       - hms-app
     depends_on:
