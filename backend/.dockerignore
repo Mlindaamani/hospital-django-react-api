@@ -3,8 +3,9 @@ env
 venv
 .dockerignore
 .venv
+migrations/
 Dockerfile
-__pycache__
+__pycache__/
 *.pyc
 *.pyo
 .git

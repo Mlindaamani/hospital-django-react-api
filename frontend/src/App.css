@@ -12,20 +12,11 @@
 .labtest:hover {
   transform: translateZ(20px) scale(1.1);
 }
+
 .appointment:hover {
   transform: translateZ(10px) scale(1.1);
 }
 
-.modal-open {
-  overflow: hidden;
-}
-
-.items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 32px;
-}
 
 .med-card {
   cursor: pointer;
@@ -54,17 +45,10 @@ html {
   color: #fff;
 }
 
-.chat-dash {
-  background: linear-gradient(135deg, #063d02da, #000000cb);
-}
 
 .chat-app {
   background: linear-gradient(135deg, #4f69db, #5e3487);
 }
-.chat-app-color {
-  background: linear-gradient(135deg, #4f69db, #5e3487);
-}
-
 
 
 @keyframes shake {
@@ -168,14 +152,13 @@ html {
 
 .side-bar-links:hover{
 background-color: rgba(255,255,255,0.1);
-  border-radius: 4px;
+border-radius: 4px;
 }
 
 .active {
   background-color: rgba(255,255,255,0.2);
   color: #fff;
   border-radius: 4px;
-  /* font-weight: bold; */
 }
 
 
@@ -185,7 +168,6 @@ background-color: rgba(255,255,255,0.1);
 }
 
 
-/* Custom datepicker style */
 .custom-datepicker {
   background-color: #f8f9fa; 
   border: 1px solid #ced4da;

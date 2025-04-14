@@ -11,7 +11,7 @@ export const SidebarLink = ({ to, icon, text }) => {
     <NavLink
       to={to}
       end
-      className={`text-decoration-none text-start w-100 text-light mb-1 p-2  side-bar-links border-right-2 ${
+      className={`text-decoration-none text-start w-100 text-light p-1 side-bar-links border-right-2${
         isActive ? "active fw-semibold" : ""
       }`}
     >
