@@ -7,7 +7,7 @@ import {
 } from "../utils/functions";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(previousRequest);
       } catch (refreshError) {
         removeTokens();
-        window.location.href = "/login";
+        window.location.href = import.meta.env.VITE_LOGOUT_URL;
       }
     }
     return Promise.reject(error);
