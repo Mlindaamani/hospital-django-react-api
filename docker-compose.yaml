@@ -37,13 +37,13 @@ services:
       dockerfile: Dockerfile
     container_name: api
     command: >
-      sh -c "python manage.py collectstatic --noinput &&
-             gunicorn --bind 0.0.0.0:8000 movie_api.wsgi:application"
+      bash -c "python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 hms.wsgi:application"
     env_file:
       - ./backend/.env
     volumes:
       - ./backend:/app
-      - static_data:/app/static # Shared volume for static files
+      - ./backend/static:/app/static # Shared volume for static files
     networks:
       - hms-app
     depends_on:
@@ -57,8 +57,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf # Custom Nginx config
-      - static_data:/app/static # Shared volume for static files
+      - ./backend/nginx/nginx.conf:/etc/nginx/conf.d/default.conf # Custom Nginx config
+      - ./backend/static:/app/static # Shared volume for static files
     networks:
       - hms-app
     depends_on:
@@ -66,64 +66,10 @@ services:
 
 volumes:
   postgres_data:
-  static_data: # Shared volume for static files
+  # static_data: # Shared volume for static files
 
 networks:
   hms-app:
     driver: bridge
-# services:
-#   postgres_database:
-#     image: postgres:14-alpine
-#     ports:
-#       - "5432:5432"
-#     container_name: postgres
-#     env_file:
-#       - ./backend/.env
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data/
-#     networks:
-#       - hms-app
 
-#   react_client:
-#     build:
-#       context: ./frontend
-#       dockerfile: Dockerfile
-#     container_name: client
-#     command: npm run dev
-#     env_file:
-#       - ./frontend/.env
-#     ports:
-#       - "5173:5173"
-#     volumes:
-#       - ./frontend:/app
-#       - /app/node_modules
-#     networks:
-#       - hms-app
-#     environment:
-#       - CHOKIDAR_USEPOLLING=true
-#     depends_on:
-#       - django_backend
 
-#   django_backend:
-#     build:
-#       context: ./backend
-#       dockerfile: Dockerfile
-#     container_name: api
-#     command: python manage.py runserver 0.0.0.0:8000
-#     env_file:
-#       - ./backend/.env
-#     ports:
-#       - "8000:8000"
-#     volumes:
-#       - ./backend:/app
-#     networks:
-#       - hms-app
-#     depends_on:
-#       - postgres_database
-
-# volumes:
-#   postgres_data:
-
-# networks:
-#   hms-app:
-#     driver: bridge
