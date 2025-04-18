@@ -1,4 +1,3 @@
-from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -32,16 +31,12 @@ router.register('medicines', MedicineViewSet, basename='medicines')
 from hms import settings
 
 urlpatterns = [
-    # JWT Authentication URLS
-    path('auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('auth/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # router-generated URLs
-    path('', include(router.urls)),
+    path('api/auth/jwt/create/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/auth/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/', include(router.urls)),
 ]
 
-if settings.DEBUG == True:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 
 # POST /auth/users/ → Register a new user
